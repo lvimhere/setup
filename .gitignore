@@ -1,0 +1,12 @@
+.config/kitty/kitty.conf.bak
+docker/music-tag-web/config/bin/*
+docker/music-tag-web/config/log/*
+docker/music-tag-web/config/tmp/*
+docker/music-tag-web/config/*.db
+docker/music-tag-web/config/*.db-shm
+docker/music-tag-web/config/*.db-wal
+docker/music-tag-web/music/*
+!docker/music-tag-web/config/bin/.gitkeep
+!docker/music-tag-web/config/log/.gitkeep
+!docker/music-tag-web/config/tmp/.gitkeep
+!docker/music-tag-web/music/.gitkeep

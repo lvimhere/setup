@@ -1,0 +1,23 @@
+local pack_opts = { confirm = false, load = true }
+
+vim.pack.add(require("plugins.specs"), pack_opts)
+
+require("plugins.colorscheme")
+require("plugins.treesitter")
+require("plugins.snippets")
+require("plugins.completion")
+require("plugins.lsp")
+require("plugins.formatting")
+require("plugins.frontend")
+require("plugins.markdown")
+require("plugins.search")
+require("plugins.session")
+require("plugins.explorers")
+require("plugins.outline")
+require("plugins.folding")
+require("plugins.git")
+require("plugins.trouble")
+require("plugins.dap")
+require("plugins.test")
+require("plugins.ui")
+require("plugins.editing")

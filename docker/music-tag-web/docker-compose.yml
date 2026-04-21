@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  music-tag-web:
+    image: xhongc/music_tag_web:latest
+    container_name: music-tag-web
+    restart: unless-stopped
+    ports:
+      - "8002:8002"                    # V2 版本使用 8002 端口[citation:1][citation:3]
+    volumes:
+      - /home/ivey/Music:/app/media:rw          # 音乐文件目录
+      - ./config:/app/data             # 配置和数据目录

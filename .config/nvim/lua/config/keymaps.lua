@@ -1,0 +1,6 @@
+vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
+vim.keymap.set("n", "]b", "<cmd>bnext<CR>", { desc = "Next buffer" })
+vim.keymap.set("n", "[b", "<cmd>bprevious<CR>", { desc = "Previous buffer" })
+vim.keymap.set("n", "<leader>bb", "<cmd>buffer #<CR>", { desc = "Switch to alternate buffer" })
+vim.keymap.set("n", "]t", "<cmd>tabnext<CR>", { desc = "Next tabpage" })
+vim.keymap.set("n", "[t", "<cmd>tabprevious<CR>", { desc = "Previous tabpage" })

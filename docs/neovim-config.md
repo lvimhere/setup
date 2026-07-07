@@ -7,7 +7,7 @@
 - **目标版本：** Neovim 0.12
 - **包管理方式：** 内置 `vim.pack`
 - **Leader 键：** `<Space>`
-- **定位：** 面向编码的全能型工作流，覆盖补全、AI 助手、LSP、格式化、Lint、搜索、文件浏览、Git、调试、测试与 Markdown 渲染
+- **定位：** 面向编码的全能型工作流，覆盖补全、AI 助手、LSP、格式化、Lint、搜索、HTTP 请求、文件浏览、Git、调试、测试与 Markdown 渲染
 
 ## 配置结构
 
@@ -35,6 +35,7 @@
         ├── frontend.lua
         ├── markdown.lua
         ├── search.lua
+        ├── kulala.lua
         ├── session.lua
         ├── explorers.lua
         ├── outline.lua
@@ -120,6 +121,11 @@
 **Treesitter 命令**
 
 - `:TSInstallRecommended`：安装这套配置推荐的解析器
+
+**当前行为**
+
+- 启动后会在后台自动安装缺失的推荐解析器
+- 打开某文件类型时，若对应推荐解析器尚未安装，会按需补装后再启用高亮
 
 **已配置的 Treesitter 语言**
 
@@ -210,6 +216,11 @@
 - `vue_ls`
 - `yamlls`
 
+**当前行为**
+
+- LSP 不会在启动时一次性全部启用，而是按当前 buffer 的 `filetype` 懒加载对应语言服务器
+- 首次打开某语言文件时，才会启用匹配的 LSP
+
 **Vue 支持说明**
 
 - `.vue` 文件使用 `vue_ls`
@@ -226,6 +237,7 @@
 - `goimports`
 - `isort`
 - `prettierd`
+- `ruff`
 - `shellcheck`
 - `shfmt`
 - `stylua`
@@ -294,6 +306,38 @@
 - 对 `markdown` 与 `codecompanion` buffer 启用
 - 在普通模式、命令行模式、终端模式显示渲染效果
 - 与 `blink.cmp` 联动，支持 Markdown 中的补全能力
+
+### HTTP / API 客户端
+
+| 插件 | 作用 | 说明 |
+| --- | --- | --- |
+| `mistweaverco/kulala.nvim` | HTTP / GraphQL / gRPC / WebSocket 客户端 | 兼容 JetBrains `.http` 规范，支持环境变量、脚本与断言 |
+
+**系统依赖**
+
+- `curl`：下载并运行 `kulala-core` 后端
+- `git`：拉取 Kulala 专用 Treesitter grammar 与 queries
+- `tree-sitter` CLI：从内置 grammar 生成 `kulala_http` 解析器
+
+**当前行为**
+
+- 识别 `.http` 与 `.rest` 文件
+- 响应窗口默认在右侧 split 打开，边框风格与现有配置一致
+- 启用 Kulala 内置 LSP，为 HTTP 脚本提供补全
+- 启用全局快捷键，前缀为 `<leader>R`
+- 在 `auto-session` 之前加载，以便正确注册会话恢复相关 hook
+- 自动追加 `sessionoptions+=globals`，用于恢复 Kulala 请求历史与 UI 状态
+
+**常用全局快捷键**
+
+| 模式 | 按键 | 作用 |
+| --- | --- | --- |
+| 普通 / 可视模式 | `<leader>Rs` | 发送当前请求 |
+| 普通 / 可视模式 | `<leader>Ra` | 发送文件中全部请求 |
+| 普通模式 | `<leader>Rb` | 打开 Scratchpad |
+| 普通模式 | `<leader>Rr` | 重放上次请求 |
+
+在 `.http` / `.rest` 文件中，Kulala 还会提供额外的 filetype 快捷键；按 `<leader>` 可查看完整列表。
 
 ### 搜索与跳转
 
@@ -433,6 +477,7 @@
 | 模式 | 按键 | 作用 |
 | --- | --- | --- |
 | 普通模式 | `<Esc>` | 清除搜索高亮 |
+| 普通模式 | `<leader>?` | 打开 which-key 快捷键提示 |
 | 普通模式 | `]b` | 切换到下一个 buffer |
 | 普通模式 | `[b` | 切换到上一个 buffer |
 | 普通模式 | `<leader>bb` | 切换到上一个使用过的 buffer |
@@ -649,6 +694,17 @@
 - 前端专用 prompts 只会在 `javascript`、`typescript`、`javascriptreact`、`typescriptreact`、`vue`、`css`、`scss`、`less`、`html` 等前端文件类型里出现
 - 常用 prompts 也可以通过 `:CodeCompanion /explain_cn`、`/fix_cn`、`/refactor_cn`、`/tests_cn`、`/summary_cn` 等 alias 调用
 
+## HTTP / API 快捷键
+
+这些快捷键由 Kulala 注册，可在任意 buffer 中使用；部分操作在 `.http` / `.rest` 文件中体验最佳。
+
+| 模式 | 按键 | 作用 |
+| --- | --- | --- |
+| 普通 / 可视模式 | `<leader>Rs` | 发送当前请求 |
+| 普通 / 可视模式 | `<leader>Ra` | 发送文件中全部请求 |
+| 普通模式 | `<leader>Rb` | 打开 Scratchpad |
+| 普通模式 | `<leader>Rr` | 重放上次请求 |
+
 ## which-key 分组
 
 为了让 Leader 键更容易记忆，which-key 已注册以下分组：
@@ -664,6 +720,7 @@
 | `<leader>h` | Git hunks |
 | `<leader>m` | Markdown |
 | `<leader>o` | Oil |
+| `<leader>R` | HTTP Request |
 | `<leader>s` | Search |
 | `<leader>t` | Test |
 | `<leader>u` | Undo |
@@ -684,6 +741,7 @@
 | `nvim-mini/mini.ai` | 文本对象增强 | **在维护**，最近提交时间为 2026-04 |
 | `olimorris/codecompanion.nvim` | AI 对话与工作流 | **在维护**，最近提交时间为 2026-04 |
 | `zbirenbaum/copilot.lua` | Copilot 接入 | **在维护**，最近提交时间为 2026-04 |
+| `mistweaverco/kulala.nvim` | HTTP / API 客户端 | **在维护**，最近提交时间为 2026-04 |
 | `numToStr/Comment.nvim` | 注释操作 | **稳定可用**，最近提交时间为 2024-06，更新频率低于上面几项，但插件成熟、使用广泛 |
 
 ## 说明
@@ -698,3 +756,4 @@
   - **渲染后的阅读视图**
   - **侧边预览视图**
 - AI 工作流现在默认接入 Copilot，并补充了中文 prompts 与前端专用 prompts。
+- Kulala 已接入，可在 Neovim 内直接编写并发送 `.http` / `.rest` 请求。

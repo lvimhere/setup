@@ -26,6 +26,7 @@ require("which-key").setup({
     { "<leader>if", group = "AI [F]rontend" },
     { "<leader>m", group = "[M]arkdown" },
     { "<leader>o", group = "[O]il" },
+    { "<leader>R", group = "HTTP [R]equest" },
     { "<leader>s", group = "[S]earch" },
     { "<leader>t", group = "[T]est" },
     { "<leader>u", group = "[U]ndo" },

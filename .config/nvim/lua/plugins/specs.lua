@@ -18,6 +18,7 @@ return {
   "https://github.com/MunifTanjim/nui.nvim",
   "https://github.com/nvim-tree/nvim-web-devicons",
   "https://github.com/nvim-telescope/telescope.nvim",
+  "https://github.com/mistweaverco/kulala.nvim",
   "https://github.com/rmagatti/auto-session",
   "https://github.com/stevearc/oil.nvim",
   { src = "https://github.com/nvim-neo-tree/neo-tree.nvim", version = vim.version.range("3") },

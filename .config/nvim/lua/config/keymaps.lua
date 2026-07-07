@@ -1,3 +1,7 @@
+vim.keymap.set("n", "<leader>?", function()
+  require("which-key").show({ global = false })
+end, { desc = "Show keybindings" })
+
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
 vim.keymap.set("n", "]b", "<cmd>bnext<CR>", { desc = "Next buffer" })
 vim.keymap.set("n", "[b", "<cmd>bprevious<CR>", { desc = "Previous buffer" })

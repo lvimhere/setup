@@ -1,5 +1,5 @@
 require("render-markdown").setup({
-  file_types = { "markdown" },
+  file_types = { "markdown", "codecompanion" },
   render_modes = { "n", "c", "t" },
   completions = {
     lsp = {

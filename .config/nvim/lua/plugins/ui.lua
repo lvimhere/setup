@@ -22,6 +22,8 @@ require("which-key").setup({
     { "<leader>d", group = "[D]ebug" },
     { "<leader>g", group = "[G]it" },
     { "<leader>h", group = "Git [H]unks" },
+    { "<leader>i", group = "A[I]" },
+    { "<leader>if", group = "AI [F]rontend" },
     { "<leader>m", group = "[M]arkdown" },
     { "<leader>o", group = "[O]il" },
     { "<leader>s", group = "[S]earch" },

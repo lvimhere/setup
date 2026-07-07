@@ -7,7 +7,7 @@
 - **目标版本：** Neovim 0.12
 - **包管理方式：** 内置 `vim.pack`
 - **Leader 键：** `<Space>`
-- **定位：** 面向编码的全能型工作流，覆盖补全、LSP、格式化、Lint、搜索、文件浏览、Git、调试、测试与 Markdown 渲染
+- **定位：** 面向编码的全能型工作流，覆盖补全、AI 助手、LSP、格式化、Lint、搜索、文件浏览、Git、调试、测试与 Markdown 渲染
 
 ## 配置结构
 
@@ -23,11 +23,13 @@
     │   └── keymaps.lua
     └── plugins/
         ├── init.lua
+        ├── vscode.lua
         ├── specs.lua
         ├── colorscheme.lua
         ├── treesitter.lua
         ├── snippets.lua
         ├── completion.lua
+        ├── ai.lua
         ├── lsp.lua
         ├── formatting.lua
         ├── frontend.lua
@@ -44,6 +46,27 @@
         ├── ui.lua
         └── editing.lua
 ```
+
+## 环境分流
+
+- `init.lua` 会先加载通用配置 `require("config")`
+- 当 `vim.g.vscode` 为真时，只加载 `lua/plugins/vscode.lua`
+- 在终端中运行 Neovim 时，继续加载完整插件入口 `lua/plugins/init.lua`
+
+当前分流策略如下：
+
+| 运行环境 | 加载内容 | 说明 |
+| --- | --- | --- |
+| 终端 Neovim | `config` + `plugins` | 保留完整编码工作流，包括 LSP、补全、搜索、文件树、Git、调试、测试等 |
+| VSCode Neovim | `config` + `plugins.vscode` | 仅保留轻量编辑增强，避免与 VSCode 的 LSP、补全、面板和 UI 行为冲突 |
+
+`lua/plugins/vscode.lua` 当前只启用以下插件：
+
+- `numToStr/Comment.nvim`
+- `kylechui/nvim-surround`
+- `nvim-mini/mini.ai`
+
+这样拆分后，终端中的 Neovim 功能不会减少；只有 VSCode 嵌入场景会改走精简插件集。
 
 ## 核心编辑行为
 
@@ -134,6 +157,33 @@
 | `<C-b>` | 向上滚动补全文档 |
 | `<C-f>` | 向下滚动补全文档 |
 | `<C-k>` | 切换函数签名窗口 |
+
+### AI 编码助手
+
+| 插件 | 作用 | 说明 |
+| --- | --- | --- |
+| `zbirenbaum/copilot.lua` | GitHub Copilot 补全与认证 | 提供 Copilot 建议、面板和认证入口 |
+| `olimorris/codecompanion.nvim` | AI 对话、Inline 改写与 Prompt Library | 默认通过 Copilot adapter 工作，集成中文工作流和前端专用 prompts |
+
+**当前行为**
+
+- Copilot 建议默认**手动触发**，避免和 `blink.cmp` 的 ghost text 相互干扰
+- Copilot 面板默认开启并支持自动刷新
+- `CodeCompanion` 的 `chat`、`inline`、`cmd` 交互默认都走 Copilot adapter
+- `CodeCompanion` 聊天缓冲区使用 `blink` 作为补全来源，并开启上下文管理
+- 已加入一组中文常用 prompts：解释、修复、重构、补测试、总结文件
+- 已加入一组前端专用 prompts：解释组件、修复前端选区、重构前端选区、生成前端测试
+- `:Copilot auth` 用于首次登录 GitHub Copilot
+- 命令行中输入 `:cc` 会自动展开为 `:CodeCompanion`
+
+**Copilot 建议快捷键**
+
+| 模式 | 按键 | 作用 |
+| --- | --- | --- |
+| 插入模式 | `<M-l>` | 接受当前 Copilot 建议 |
+| 插入模式 | `<M-]>` | 查看下一条 Copilot 建议 |
+| 插入模式 | `<M-[>` | 查看上一条 Copilot 建议 |
+| 插入模式 | `<M-;>` | 关闭当前 Copilot 建议 |
 
 ### LSP 与外部工具
 
@@ -241,7 +291,7 @@
 
 **当前行为**
 
-- 只对 `markdown` 文件启用
+- 对 `markdown` 与 `codecompanion` buffer 启用
 - 在普通模式、命令行模式、终端模式显示渲染效果
 - 与 `blink.cmp` 联动，支持 Markdown 中的补全能力
 
@@ -575,6 +625,30 @@
 - `:RenderMarkdown buf_toggle`
 - `:RenderMarkdown preview`
 
+## AI 快捷键
+
+| 模式 | 按键 | 作用 |
+| --- | --- | --- |
+| 普通 / 可视模式 | `<leader>ia` | 打开 CodeCompanion Action Palette |
+| 普通模式 | `<leader>ic` | 切换 CodeCompanion 聊天窗口 |
+| 普通 / 可视模式 | `<leader>ii` | 打开 CodeCompanion Inline Prompt |
+| 可视模式 | `<leader>is` | 将选中内容加入当前 Chat |
+| 普通模式 | `<leader>ip` | 打开 Copilot Panel |
+| 普通 / 可视模式 | `<leader>ie` | 中文解释代码 |
+| 可视模式 | `<leader>ifx` | 中文修复选中代码 |
+| 可视模式 | `<leader>ir` | 中文重构选中代码 |
+| 普通 / 可视模式 | `<leader>it` | 中文生成测试思路与样例 |
+| 普通模式 | `<leader>im` | 中文总结当前文件 |
+| 普通 / 可视模式 | `<leader>ife` | 前端解释组件 / Hook / 状态流 |
+| 可视模式 | `<leader>iff` | 修复前端选中代码 |
+| 可视模式 | `<leader>ifr` | 重构前端选中代码 |
+| 普通 / 可视模式 | `<leader>ift` | 生成前端测试方案与样例 |
+
+**提示**
+
+- 前端专用 prompts 只会在 `javascript`、`typescript`、`javascriptreact`、`typescriptreact`、`vue`、`css`、`scss`、`less`、`html` 等前端文件类型里出现
+- 常用 prompts 也可以通过 `:CodeCompanion /explain_cn`、`/fix_cn`、`/refactor_cn`、`/tests_cn`、`/summary_cn` 等 alias 调用
+
 ## which-key 分组
 
 为了让 Leader 键更容易记忆，which-key 已注册以下分组：
@@ -584,6 +658,8 @@
 | `<leader>c` | Code |
 | `<leader>d` | Debug |
 | `<leader>g` | Git |
+| `<leader>i` | AI |
+| `<leader>if` | AI Frontend |
 | `<leader>b` | Buffer |
 | `<leader>h` | Git hunks |
 | `<leader>m` | Markdown |
@@ -606,6 +682,8 @@
 | `mbbill/undotree` | Undo 树 | **在维护**，最近提交时间为 2026-03 |
 | `kylechui/nvim-surround` | 环绕编辑 | **在维护**，最近提交时间为 2026-04 |
 | `nvim-mini/mini.ai` | 文本对象增强 | **在维护**，最近提交时间为 2026-04 |
+| `olimorris/codecompanion.nvim` | AI 对话与工作流 | **在维护**，最近提交时间为 2026-04 |
+| `zbirenbaum/copilot.lua` | Copilot 接入 | **在维护**，最近提交时间为 2026-04 |
 | `numToStr/Comment.nvim` | 注释操作 | **稳定可用**，最近提交时间为 2024-06，更新频率低于上面几项，但插件成熟、使用广泛 |
 
 ## 说明
@@ -619,3 +697,4 @@
   - **原始文本视图**
   - **渲染后的阅读视图**
   - **侧边预览视图**
+- AI 工作流现在默认接入 Copilot，并补充了中文 prompts 与前端专用 prompts。

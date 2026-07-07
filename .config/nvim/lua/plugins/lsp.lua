@@ -70,6 +70,7 @@ require("mason-tool-installer").setup({
     "goimports",
     "isort",
     "prettierd",
+    "ruff",
     "shellcheck",
     "shfmt",
     "stylua",
@@ -89,7 +90,39 @@ for server, config in pairs(servers) do
   }, config))
 end
 
-vim.lsp.enable(vim.tbl_keys(servers))
+local enabled_servers = {}
+
+local function enable_lsp_for_filetype(filetype)
+  if filetype == "" then
+    return
+  end
+
+  for server in pairs(servers) do
+    if not enabled_servers[server] then
+      local server_config = vim.lsp.config[server]
+      local filetypes = server_config and server_config.filetypes
+      if filetypes and vim.tbl_contains(filetypes, filetype) then
+        vim.lsp.enable(server)
+        enabled_servers[server] = true
+      end
+    end
+  end
+end
+
+local lsp_enable_group = vim.api.nvim_create_augroup("lsp_lazy_enable", { clear = true })
+vim.api.nvim_create_autocmd("FileType", {
+  group = lsp_enable_group,
+  callback = function(args)
+    enable_lsp_for_filetype(args.match)
+  end,
+})
+vim.api.nvim_create_autocmd("VimEnter", {
+  group = lsp_enable_group,
+  once = true,
+  callback = function()
+    enable_lsp_for_filetype(vim.bo.filetype)
+  end,
+})
 
 local lsp_group = vim.api.nvim_create_augroup("lsp_keymaps", { clear = true })
 vim.api.nvim_create_autocmd("LspAttach", {

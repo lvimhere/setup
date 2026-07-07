@@ -2,6 +2,8 @@ return {
   "https://github.com/catppuccin/nvim",
   "https://github.com/nvim-treesitter/nvim-treesitter",
   "https://github.com/saghen/blink.cmp",
+  "https://github.com/zbirenbaum/copilot.lua",
+  { src = "https://github.com/olimorris/codecompanion.nvim", version = vim.version.range("^19.0.0") },
   "https://github.com/L3MON4D3/LuaSnip",
   "https://github.com/rafamadriz/friendly-snippets",
   "https://github.com/neovim/nvim-lspconfig",

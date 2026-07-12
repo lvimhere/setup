@@ -129,6 +129,10 @@ local function has_formatter_config(bufnr)
     return false
   end
 
+  if ft == "http" or ft == "rest" then
+    return true
+  end
+
   if ft == "python" then
     return has_python_formatter_config(startpath)
   end
@@ -155,6 +159,7 @@ conform.setup({
     cpp = { "clang_format" },
     css = prettier_formatters,
     go = { "gofumpt", "goimports" },
+    http = { "kulala-fmt" },
     html = prettier_formatters,
     javascript = prettier_formatters,
     javascriptreact = prettier_formatters,
@@ -163,6 +168,7 @@ conform.setup({
     lua = { "stylua" },
     markdown = prettier_formatters,
     python = { "isort", "black" },
+    rest = { "kulala-fmt" },
     rust = { "rustfmt" },
     sh = { "shfmt" },
     typescript = prettier_formatters,

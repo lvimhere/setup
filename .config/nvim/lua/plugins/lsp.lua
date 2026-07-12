@@ -69,6 +69,7 @@ require("mason-tool-installer").setup({
     "gofumpt",
     "goimports",
     "isort",
+    "kulala-fmt",
     "prettierd",
     "ruff",
     "shellcheck",

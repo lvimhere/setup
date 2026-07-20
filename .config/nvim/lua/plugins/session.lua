@@ -1,8 +1,16 @@
+vim.opt.sessionoptions:append("globals")
+
 require("auto-session").setup({
   auto_restore = true,
   auto_save = true,
   auto_create = true,
   legacy_cmds = false,
+  pre_save_cmds = {
+    function()
+      vim.api.nvim_exec_autocmds("User", { pattern = "SessionSavePre" })
+      return true
+    end,
+  },
   suppressed_dirs = {
     vim.loop.os_homedir(),
     "/",
@@ -11,7 +19,7 @@ require("auto-session").setup({
     "checkhealth",
     "neo-tree",
     "neo-tree-popup",
-    "oil",
+    "minifiles",
     "undotree",
   },
   session_lens = {

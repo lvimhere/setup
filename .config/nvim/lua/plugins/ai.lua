@@ -23,47 +23,6 @@ local function target_code(context, selection_instruction, buffer_instruction)
   return string.format("%s\n\n请结合 #{buffer} 的内容来处理。", buffer_instruction)
 end
 
-require("copilot").setup({
-  panel = {
-    enabled = true,
-    auto_refresh = true,
-  },
-  suggestion = {
-    enabled = true,
-    auto_trigger = false,
-    hide_during_completion = true,
-    debounce = 75,
-    keymap = {
-      accept = "<M-l>",
-      next = "<M-]>",
-      prev = "<M-[>",
-      dismiss = "<M-;>",
-    },
-  },
-  -- Copilot disables markdown/yaml/gitcommit by default; re-enable them here.
-  filetypes = {
-    markdown = true,
-    yaml = true,
-    gitcommit = true,
-  },
-})
-
-local copilot_group = vim.api.nvim_create_augroup("copilot_blink_integration", { clear = true })
-vim.api.nvim_create_autocmd("User", {
-  group = copilot_group,
-  pattern = "BlinkCmpMenuOpen",
-  callback = function()
-    vim.b.copilot_suggestion_hidden = true
-  end,
-})
-vim.api.nvim_create_autocmd("User", {
-  group = copilot_group,
-  pattern = "BlinkCmpMenuClose",
-  callback = function()
-    vim.b.copilot_suggestion_hidden = false
-  end,
-})
-
 require("codecompanion").setup({
   opts = {
     log_level = "ERROR",
@@ -355,7 +314,6 @@ vim.keymap.set({ "n", "v" }, "<leader>ia", "<cmd>CodeCompanionActions<CR>", { de
 vim.keymap.set("n", "<leader>ic", "<cmd>CodeCompanionChat Toggle<CR>", { desc = "AI [C]hat" })
 vim.keymap.set({ "n", "v" }, "<leader>ii", "<cmd>CodeCompanion<CR>", { desc = "AI [I]nline prompt" })
 vim.keymap.set("v", "<leader>is", "<cmd>CodeCompanionChat Add<CR>", { desc = "AI [S]end selection" })
-vim.keymap.set("n", "<leader>ip", "<cmd>Copilot panel<CR>", { desc = "Copilot [P]anel" })
 vim.keymap.set({ "n", "v" }, "<leader>ie", function()
   require("codecompanion").prompt("explain_cn")
 end, { desc = "AI [E]xplain" })

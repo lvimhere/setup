@@ -1,4 +1,5 @@
 vim.opt.termguicolors = true
+vim.opt.hidden = true
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.mouse = "a"
@@ -28,3 +29,18 @@ vim.opt.sidescrolloff = 8
 vim.opt.confirm = true
 vim.opt.completeopt = { "menu", "menuone", "noselect", "popup" }
 vim.opt.winborder = "none"
+
+vim.opt.title = true
+
+local function update_title()
+  local file = vim.api.nvim_buf_get_name(0)
+  if file ~= "" then
+    vim.opt.titlestring = vim.fn.fnamemodify(file, ":~:.")
+  else
+    vim.opt.titlestring = vim.fn.fnamemodify(vim.fn.getcwd(), ":~")
+  end
+end
+
+vim.api.nvim_create_autocmd({ "BufEnter", "DirChanged" }, {
+  callback = update_title,
+})

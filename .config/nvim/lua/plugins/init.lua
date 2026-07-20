@@ -1,8 +1,11 @@
 local pack_opts = { confirm = false, load = true }
 
+vim.g.barbar_auto_setup = false
+
 vim.pack.add(require("plugins.specs"), pack_opts)
 
 require("plugins.colorscheme")
+require("plugins.barbar")
 require("plugins.treesitter")
 require("plugins.snippets")
 require("plugins.completion")
@@ -13,6 +16,7 @@ require("plugins.frontend")
 require("plugins.markdown")
 require("plugins.search")
 require("plugins.kulala")
+require("plugins.mini_files")
 require("plugins.session")
 require("plugins.explorers")
 require("plugins.outline")
@@ -22,4 +26,5 @@ require("plugins.trouble")
 require("plugins.dap")
 require("plugins.test")
 require("plugins.ui")
+require("plugins.toggleterm")
 require("plugins.editing")

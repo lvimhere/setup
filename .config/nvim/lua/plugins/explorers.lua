@@ -1,9 +1,112 @@
+local oil = require("oil")
+
+oil.setup({
+  -- Keep neo-tree as the netrw hijacker; open Oil via `-` / <leader>of.
+  default_file_explorer = false,
+  columns = { "icon" },
+  win_options = {
+    wrap = false,
+    signcolumn = "no",
+    list = false,
+  },
+  view_options = {
+    show_hidden = true,
+    natural_order = true,
+    is_always_hidden = function(name, _)
+      return name == ".." or name == ".git"
+    end,
+  },
+  delete_to_trash = true,
+  skip_confirm_for_simple_edits = true,
+  use_default_keymaps = true,
+  float = {
+    padding = 2,
+    max_width = 0.7,
+    max_height = 0.7,
+    border = "none",
+    preview_split = "right",
+  },
+  keymaps = {
+    ["<C-h>"] = false,
+    ["<C-l>"] = false,
+    ["<C-c>"] = false,
+    ["<C-r>"] = "actions.refresh",
+    ["q"] = "actions.close",
+  },
+})
+
+--- Neo-tree Enter opens buffers with :edit / :buffer in a normal split.
+--- ToggleTerm floats are a separate window type; opening the same term buffer
+--- via neo-tree "steals" it into a split and breaks <C-\> float toggle.
+local function open_toggleterm_float(state)
+  local node = state.tree:get_node()
+  if not node then
+    return
+  end
+
+  -- Folder row under "Terminals" — just expand/collapse.
+  if node:has_children() then
+    require("neo-tree.sources.common.commands").toggle_node(state)
+    return
+  end
+
+  local bufnr = node.extra and node.extra.bufnr
+  local bufname = ""
+  if bufnr and vim.api.nvim_buf_is_valid(bufnr) then
+    bufname = vim.api.nvim_buf_get_name(bufnr)
+  else
+    bufname = node.path or node:get_id() or ""
+  end
+
+  local is_toggleterm = type(bufname) == "string" and bufname:find("toggleterm", 1, true)
+  if not is_toggleterm then
+    require("neo-tree.sources.common.commands").open(state)
+    return
+  end
+
+  local terminal = require("toggleterm.terminal")
+  local id, term = terminal.identify(bufname)
+  term = term or (id and terminal.get(id, true))
+  if not term then
+    require("neo-tree.sources.common.commands").open(state)
+    return
+  end
+
+  -- Detach the term buffer from any normal (non-float) windows first.
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    if vim.api.nvim_win_is_valid(win) and vim.api.nvim_win_get_buf(win) == term.bufnr then
+      local cfg = vim.api.nvim_win_get_config(win)
+      if cfg.relative == "" then
+        pcall(vim.api.nvim_win_close, win, true)
+      end
+    end
+  end
+
+  require("neo-tree.command").execute({ action = "close" })
+
+  if term:is_open() and term:is_float() then
+    term:focus()
+  else
+    if term:is_open() then
+      term:close()
+    end
+    term:open(nil, "float")
+  end
+
+  if vim.api.nvim_buf_is_valid(term.bufnr) and vim.bo[term.bufnr].buftype == "terminal" then
+    vim.cmd("startinsert")
+  end
+end
+
 require("neo-tree").setup({
   auto_clean_after_session_restore = true,
   close_if_last_window = false,
   popup_border_style = "",
   source_selector = {
     winbar = true,
+  },
+  commands = {
+    open_toggleterm_float = open_toggleterm_float,
   },
   default_component_configs = {
     indent = {
@@ -63,6 +166,14 @@ require("neo-tree").setup({
       },
     },
   },
+  buffers = {
+    window = {
+      mappings = {
+        ["<cr>"] = "open_toggleterm_float",
+        ["o"] = "open_toggleterm_float",
+      },
+    },
+  },
   git_status_scope_to_path = true,
   window = {
     position = "left",
@@ -70,6 +181,8 @@ require("neo-tree").setup({
   },
 })
 
+vim.keymap.set("n", "-", "<cmd>Oil<CR>", { desc = "Open parent directory" })
+vim.keymap.set("n", "<leader>of", oil.toggle_float, { desc = "[O]il [F]loat" })
 vim.keymap.set("n", "<leader>ee", "<cmd>Neotree source=filesystem position=left toggle=true<CR>",
   { desc = "[E]xplorer toggle sidebar" })
 vim.keymap.set("n", "<leader>E",

@@ -7,7 +7,7 @@
 - **目标版本：** Neovim 0.12
 - **包管理方式：** 内置 `vim.pack`
 - **Leader 键：** `<Space>`
-- **定位：** 面向编码的全能型工作流，覆盖补全、AI 助手、LSP、格式化、Lint、搜索、HTTP 请求、文件浏览、Git、调试、测试与 Markdown 渲染
+- **定位：** 面向编码的全能型工作流，覆盖补全、LSP、格式化、Lint、搜索、屏内跳转（Flash）、HTTP 请求、文件浏览、终端、Git、调试、测试与 Markdown 渲染。内嵌 AI 插件已移除；需要 AI 时在侧边终端运行外部 agent CLI（如 Cursor `agent`、Claude Code 等）。
 
 ## 配置结构
 
@@ -29,13 +29,14 @@
         ├── treesitter.lua
         ├── snippets.lua
         ├── completion.lua
-        ├── ai.lua
         ├── lsp.lua
         ├── formatting.lua
         ├── frontend.lua
         ├── markdown.lua
         ├── search.lua
+        ├── flash.lua
         ├── kulala.lua
+        ├── mini_files.lua
         ├── session.lua
         ├── explorers.lua
         ├── outline.lua
@@ -45,6 +46,8 @@
         ├── dap.lua
         ├── test.lua
         ├── ui.lua
+        ├── toggleterm.lua
+        ├── barbar.lua
         └── editing.lua
 ```
 
@@ -58,14 +61,15 @@
 
 | 运行环境 | 加载内容 | 说明 |
 | --- | --- | --- |
-| 终端 Neovim | `config` + `plugins` | 保留完整编码工作流，包括 LSP、补全、搜索、文件树、Git、调试、测试等 |
-| VSCode Neovim | `config` + `plugins.vscode` | 仅保留轻量编辑增强，避免与 VSCode 的 LSP、补全、面板和 UI 行为冲突 |
+| 终端 Neovim | `config` + `plugins` | 保留完整编码工作流，包括 LSP、补全、搜索、Flash 跳转、文件树、Git、调试、测试等 |
+| VSCode Neovim | `config` + `plugins.vscode` | 仅保留轻量编辑增强（含 Flash），避免与 VSCode 的 LSP、补全、面板和 UI 行为冲突 |
 
 `lua/plugins/vscode.lua` 当前只启用以下插件：
 
 - `numToStr/Comment.nvim`
 - `kylechui/nvim-surround`
 - `nvim-mini/mini.ai`
+- `folke/flash.nvim`（与终端共用 `plugins/flash.lua`）
 
 这样拆分后，终端中的 Neovim 功能不会减少；只有 VSCode 嵌入场景会改走精简插件集。
 
@@ -76,10 +80,23 @@
 - 开启真彩色：`termguicolors = true`
 - 开启行号与相对行号
 - 支持鼠标操作
-- 使用系统剪贴板：`unnamedplus`
+- 系统剪贴板：优先可用后端（见下），成功时启用 `unnamedplus`
 - 开启当前行高亮：`cursorline = true`
 - 垂直分屏默认向右打开，水平分屏默认向下打开
 - 搜索使用 `ignorecase + smartcase`
+
+**剪贴板后端选择（`options.lua`）**
+
+Neovim 在 `WAYLAND_DISPLAY` 已设置但 Wayland socket 不存在时，仍可能自动选用 `wl-copy`，导致 `yy` 报错、寄存器为空（`E353`），Flash 的 `yr` 也会失败。当前按优先级显式选择：
+
+1. `win32yank.exe`（WSL / Windows 互通，推荐）
+   - 实际文件常在 `/mnt/c/Program Files/Neovim/bin/win32yank.exe`
+   - 因路径含空格，Neovim `executable()` 可能找不到；`~/.bashrc` 会维护 `~/.local/bin/win32yank.exe` 符号链接
+   - Neovim 也会回退探测绝对路径（list 形式调用，避免空格拆词）
+2. WSL 下的 `clip.exe` + PowerShell `Get-Clipboard`
+3. 可用的 Wayland：`wl-copy` / `wl-paste`（仅当 socket 真实存在）
+4. `xclip` / `xsel`（X11）
+5. 都不可用则关闭 `clipboard`，yank 只进 Neovim 内部寄存器
 
 ### 缩进与空白字符
 
@@ -164,32 +181,19 @@
 | `<C-f>` | 向下滚动补全文档 |
 | `<C-k>` | 切换函数签名窗口 |
 
-### AI 编码助手
+### AI 工作方式（无内嵌插件）
 
-| 插件 | 作用 | 说明 |
-| --- | --- | --- |
-| `zbirenbaum/copilot.lua` | GitHub Copilot 补全与认证 | 提供 Copilot 建议、面板和认证入口 |
-| `olimorris/codecompanion.nvim` | AI 对话、Inline 改写与 Prompt Library | 默认通过 Copilot adapter 工作，集成中文工作流和前端专用 prompts |
+当前配置**不再内置** Copilot / CodeCompanion / Avante 等 Neovim AI 插件。
 
-**当前行为**
+推荐做法：
 
-- Copilot 建议默认**手动触发**，避免和 `blink.cmp` 的 ghost text 相互干扰
-- Copilot 面板默认开启并支持自动刷新
-- `CodeCompanion` 的 `chat`、`inline`、`cmd` 交互默认都走 Copilot adapter
-- `CodeCompanion` 聊天缓冲区使用 `blink` 作为补全来源，并开启上下文管理
-- 已加入一组中文常用 prompts：解释、修复、重构、补测试、总结文件
-- 已加入一组前端专用 prompts：解释组件、修复前端选区、重构前端选区、生成前端测试
-- `:Copilot auth` 用于首次登录 GitHub Copilot
-- 命令行中输入 `:cc` 会自动展开为 `:CodeCompanion`
+1. 用 ToggleTerm（`<C-\>` 或 `<leader>tf`）打开浮动 / 侧边终端
+2. 在终端中运行任意 agent CLI，例如：
+   - Cursor：`agent`
+   - Claude Code / Codex / 其它 ACP 兼容 CLI
+3. 需要对照代码时，用 Neovim 分屏或分页；窗口尺寸可用 `Alt-hjkl` / `Ctrl-方向键` 调整
 
-**Copilot 建议快捷键**
-
-| 模式 | 按键 | 作用 |
-| --- | --- | --- |
-| 插入模式 | `<M-l>` | 接受当前 Copilot 建议 |
-| 插入模式 | `<M-]>` | 查看下一条 Copilot 建议 |
-| 插入模式 | `<M-[>` | 查看上一条 Copilot 建议 |
-| 插入模式 | `<M-;>` | 关闭当前 Copilot 建议 |
+这样 Agent 能力跟所用 CLI 走，而不是跟 Neovim 插件封装走。
 
 ### LSP 与外部工具
 
@@ -303,7 +307,7 @@
 
 **当前行为**
 
-- 对 `markdown` 与 `codecompanion` buffer 启用
+- 对 `markdown` buffer 启用
 - 在普通模式、命令行模式、终端模式显示渲染效果
 - 与 `blink.cmp` 联动，支持 Markdown 中的补全能力
 
@@ -343,8 +347,21 @@
 
 | 插件 | 作用 | 说明 |
 | --- | --- | --- |
-| `nvim-telescope/telescope.nvim` | 模糊搜索与选择器 | 主搜索入口 |
+| `nvim-telescope/telescope.nvim` | 模糊搜索与选择器 | 主搜索入口（跨文件 / 符号 / 帮助等） |
+| `folke/flash.nvim` | 屏内标签跳转 | 在当前可见区域快速跳转；终端与 VSCode Neovim 均启用 |
 | `nvim-lua/plenary.nvim` | Telescope 依赖 | 通用 Lua 工具库 |
+
+**分工**
+
+- **Telescope**：找文件、全库 grep、buffer / 帮助等选择器
+- **Flash**：当前窗口（可多窗）内用标签秒跳；增强 `f`/`t`/`F`/`T`；可选 Treesitter 选区
+
+**Flash 当前行为**
+
+- 主跳转键为 `s` / `S`（占用原生 `s`；需要删字进入插入可用 `cl` / `xi`）
+- `/` `?` 搜索默认开启 Flash 标签，命令行中可用 `<C-s>` 开关
+- `f`/`t`/`F`/`T` 开启 jump labels
+- 配置集中在 `lua/plugins/flash.lua`，终端与 VSCode 共用
 
 ### 会话、结构与折叠
 
@@ -370,14 +387,14 @@
 | 插件 | 作用 | 说明 |
 | --- | --- | --- |
 | `stevearc/oil.nvim` | 轻量目录浏览器 | 像编辑 buffer 一样操作目录 |
-| `nvim-neo-tree/neo-tree.nvim` | 完整文件树 | 左侧边栏文件树 |
+| `nvim-neo-tree/neo-tree.nvim` | 完整文件树 | 左侧边栏文件树 / buffers / git status |
+| `nvim-mini/mini.files` | 迷你文件浏览器 | 额外的轻量目录导航 |
 | `MunifTanjim/nui.nvim` | Neo-tree 依赖 | UI 依赖 |
 | `nvim-tree/nvim-web-devicons` | 文件图标 | 提供文件、目录、状态图标 |
 
 **Oil 特点**
 
-- 作为默认文件浏览器
-- 回归官方思路的轻量目录浏览模式，不再使用自定义级联浮窗
+- **不是**默认文件浏览器（`default_file_explorer = false`），netrw 劫持交给 Neo-tree
 - 浮窗无边框，`<leader>of` 可单独打开 Oil 浮窗
 - `-` 在普通模式下打开当前文件所在目录的 Oil 视图
 - Oil 内保留默认导航逻辑，按 `-` 返回父目录，按 `<CR>` 打开条目
@@ -395,12 +412,13 @@
 - UndoTree 自己的“最后窗口自动退出”也已关闭，改由统一辅助窗口退出逻辑处理
 - 当任意窗口真正关闭后，如果当前 tab 里只剩 Neo-tree / Aerial / UndoTree 这类辅助窗口，则直接退出 Neovim
 - 对 UndoTree，会同时把它的主窗口和下方的 diff 细节窗口一起视为辅助窗口
+- buffers 视图中，对 ToggleTerm 终端按 `<CR>` 会以**浮动窗口**重新打开，避免把终端 buffer 偷进普通分屏后破坏 `<C-\>` 切换
 
 **Neo-tree 主流打开模式**
 
 - **filesystem + left**：最常见的常驻侧边栏文件树
 - **filesystem + float**：临时浮窗浏览文件
-- **buffers source**：按 buffer 列表浏览已打开文件
+- **buffers source**：按 buffer 列表浏览已打开文件 / 终端
 - **git_status source**：查看当前仓库改动文件
 - **reveal current file**：在树中自动定位当前文件
 
@@ -461,8 +479,10 @@
 
 | 插件 | 作用 | 说明 |
 | --- | --- | --- |
-| `nvim-lualine/lualine.nvim` | 状态栏 | 使用简洁分隔符，启用全局状态栏 |
+| `romgrk/barbar.nvim` | Buffer 标签栏 | 顶部 buffer 标签，配合 `]b` / `[b` 与 `<S-h>` / `<S-l>` |
+| `nvim-lualine/lualine.nvim` | 状态栏 | 使用简洁分隔符，启用全局状态栏；文件名显示相对路径 |
 | `folke/which-key.nvim` | 快捷键提示 | 用于提示 Leader 键分组 |
+| `akinsho/toggleterm.nvim` | 内置终端 | 默认浮动终端；可水平 / 垂直分屏，适合侧边跑 agent CLI |
 | `windwp/nvim-autopairs` | 自动补全括号与引号 | 默认启用 |
 | `numToStr/Comment.nvim` | 注释操作 | 提供 `gcc`、`gbc`、文本对象注释等 |
 | `kylechui/nvim-surround` | 环绕编辑 | 提供增删改包裹符、标签、函数调用等 |
@@ -485,11 +505,21 @@
 | 普通模式 | `[t` | 切换到上一个 tabpage |
 | 普通模式 | `-` | 打开 Oil |
 | 普通模式 | `<leader>of` | 切换 Oil 浮窗 |
-| 普通模式 | `<leader>e` | 切换 Neo-tree |
+| 普通模式 | `<leader>ee` | 切换 Neo-tree 侧边栏 |
 | 普通模式 | `<leader>E` | 在 Neo-tree 中定位当前文件 |
+| 普通模式 | `<leader>ed` | 以浮窗打开当前文件所在目录 |
 | 普通模式 | `<leader>ef` | 以浮窗模式打开 Neo-tree 文件树 |
 | 普通模式 | `<leader>eb` | 打开 Neo-tree buffers 视图 |
 | 普通模式 | `<leader>eg` | 打开 Neo-tree git_status 视图 |
+| 普通模式 | `<leader>es` | 关闭 Neo-tree |
+| 普通 / 插入 / 终端 | `<A-h>` / `<C-Left>` | 当前窗口变窄 |
+| 普通 / 插入 / 终端 | `<A-l>` / `<C-Right>` | 当前窗口变宽 |
+| 普通 / 插入 / 终端 | `<A-k>` / `<C-Up>` | 当前窗口变矮 |
+| 普通 / 插入 / 终端 | `<A-j>` / `<C-Down>` | 当前窗口变高 |
+| 普通模式 | `<leader>w=` | 均分所有窗口尺寸 |
+| 普通模式 | `<leader>w_` | 当前窗口高度最大化 |
+| 普通模式 | `<leader>w\|` | 当前窗口宽度最大化 |
+| 普通模式 | `<leader>wc` | 将 cwd 切到当前文件所在目录 |
 
 ## 搜索快捷键
 
@@ -503,6 +533,21 @@
 | 普通模式 | `<leader>sr` | 恢复上一次搜索 |
 | 普通模式 | `<leader>sh` | 搜索帮助文档 |
 | 普通模式 | `<leader>sm` | 搜索 man 手册 |
+
+## Flash 快捷键
+
+这些快捷键在终端 Neovim 与 VSCode Neovim 中均生效。
+
+| 模式 | 按键 | 作用 |
+| --- | --- | --- |
+| 普通 / 可视 / Operator | `s` | Flash jump（输入字符过滤，再按标签跳转） |
+| 普通 / 可视 / Operator | `S` | Flash Treesitter（按语法节点选中 / 跳转） |
+| Operator | `r` | Remote Flash（在远程位置执行 operator） |
+| Operator / 可视 | `R` | Treesitter Search |
+| 命令行（`/` `?`） | `<C-s>` | 开关 Flash 搜索标签 |
+| 普通 / Operator 等 | `f`/`t`/`F`/`T` | 增强字符跳转（带标签） |
+
+跳转后可用 `<C-o>` / `<C-i>` 在 jumplist 中后退 / 前进（与 `gd` 相同）。
 
 ## Oil 快捷键
 
@@ -647,15 +692,38 @@
 
 ## 测试快捷键
 
+测试使用大写 `<leader>T*`，避免与终端的小写 `<leader>t*` 冲突。
+
 | 模式 | 按键 | 作用 |
 | --- | --- | --- |
-| 普通模式 | `<leader>tt` | 运行离光标最近的测试 |
-| 普通模式 | `<leader>tf` | 运行当前测试文件 |
-| 普通模式 | `<leader>td` | 以调试模式运行最近测试 |
-| 普通模式 | `<leader>ts` | 切换测试摘要面板 |
-| 普通模式 | `<leader>to` | 打开测试输出 |
-| 普通模式 | `<leader>tO` | 切换测试输出面板 |
-| 普通模式 | `<leader>tS` | 停止测试运行 |
+| 普通模式 | `<leader>Tt` | 运行离光标最近的测试 |
+| 普通模式 | `<leader>Tf` | 运行当前测试文件 |
+| 普通模式 | `<leader>Td` | 以调试模式运行最近测试 |
+| 普通模式 | `<leader>Ts` | 切换测试摘要面板 |
+| 普通模式 | `<leader>To` | 打开测试输出 |
+| 普通模式 | `<leader>TO` | 切换测试输出面板 |
+| 普通模式 | `<leader>TS` | 停止测试运行 |
+
+## 终端快捷键（ToggleTerm）
+
+默认方向为浮动终端。小写 `<leader>t*` 给终端，大写 `<leader>T*` 给测试（见上文）。
+
+| 模式 | 按键 | 作用 |
+| --- | --- | --- |
+| 普通 / 插入 / 终端 | `<C-\>` | 切换浮动终端 |
+| 普通模式 | `<leader>tf` | 浮动终端 |
+| 普通模式 | `<leader>th` | 水平分屏终端 |
+| 普通模式 | `<leader>tv` | 垂直分屏终端 |
+| 普通模式 | `<leader>tn` | 新建终端 |
+| 普通模式 | `<leader>ts` | 选择终端 |
+| 普通模式 | `<leader>ta` | 切换全部终端显示 |
+| 普通模式 | `<leader>t1`–`<leader>t3` | 切换终端 1–3 |
+| 普通模式 | `<leader>tg` | 浮动窗口运行 `git status` |
+| 普通模式 | `<leader>tH` | 浮动窗口运行 `htop`（需已安装） |
+| 终端模式 | `<Esc>` | 退出终端插入模式到 Normal |
+| 终端模式 | `<C-h/j/k/l>` | 在终端窗口间跳转 |
+
+适合在侧边 / 浮动终端里直接运行 `agent`、`claude` 等外部 AI CLI。
 
 ## Markdown 快捷键
 
@@ -669,30 +737,6 @@
 - `:RenderMarkdown toggle`
 - `:RenderMarkdown buf_toggle`
 - `:RenderMarkdown preview`
-
-## AI 快捷键
-
-| 模式 | 按键 | 作用 |
-| --- | --- | --- |
-| 普通 / 可视模式 | `<leader>ia` | 打开 CodeCompanion Action Palette |
-| 普通模式 | `<leader>ic` | 切换 CodeCompanion 聊天窗口 |
-| 普通 / 可视模式 | `<leader>ii` | 打开 CodeCompanion Inline Prompt |
-| 可视模式 | `<leader>is` | 将选中内容加入当前 Chat |
-| 普通模式 | `<leader>ip` | 打开 Copilot Panel |
-| 普通 / 可视模式 | `<leader>ie` | 中文解释代码 |
-| 可视模式 | `<leader>ifx` | 中文修复选中代码 |
-| 可视模式 | `<leader>ir` | 中文重构选中代码 |
-| 普通 / 可视模式 | `<leader>it` | 中文生成测试思路与样例 |
-| 普通模式 | `<leader>im` | 中文总结当前文件 |
-| 普通 / 可视模式 | `<leader>ife` | 前端解释组件 / Hook / 状态流 |
-| 可视模式 | `<leader>iff` | 修复前端选中代码 |
-| 可视模式 | `<leader>ifr` | 重构前端选中代码 |
-| 普通 / 可视模式 | `<leader>ift` | 生成前端测试方案与样例 |
-
-**提示**
-
-- 前端专用 prompts 只会在 `javascript`、`typescript`、`javascriptreact`、`typescriptreact`、`vue`、`css`、`scss`、`less`、`html` 等前端文件类型里出现
-- 常用 prompts 也可以通过 `:CodeCompanion /explain_cn`、`/fix_cn`、`/refactor_cn`、`/tests_cn`、`/summary_cn` 等 alias 调用
 
 ## HTTP / API 快捷键
 
@@ -711,20 +755,21 @@
 
 | 前缀 | 分组 |
 | --- | --- |
+| `<leader>a` | Aerial |
+| `<leader>b` | Buffer |
 | `<leader>c` | Code |
 | `<leader>d` | Debug |
+| `<leader>e` | Explorer |
 | `<leader>g` | Git |
-| `<leader>i` | AI |
-| `<leader>if` | AI Frontend |
-| `<leader>b` | Buffer |
 | `<leader>h` | Git hunks |
 | `<leader>m` | Markdown |
 | `<leader>o` | Oil |
 | `<leader>R` | HTTP Request |
 | `<leader>s` | Search |
-| `<leader>t` | Test |
+| `<leader>t` | Terminal |
+| `<leader>T` | Test |
 | `<leader>u` | Undo |
-| `<leader>w` | Workspace |
+| `<leader>w` | Workspace / Window |
 | `<leader>x` | Trouble |
 
 ## 新增插件维护状态
@@ -739,21 +784,24 @@
 | `mbbill/undotree` | Undo 树 | **在维护**，最近提交时间为 2026-03 |
 | `kylechui/nvim-surround` | 环绕编辑 | **在维护**，最近提交时间为 2026-04 |
 | `nvim-mini/mini.ai` | 文本对象增强 | **在维护**，最近提交时间为 2026-04 |
-| `olimorris/codecompanion.nvim` | AI 对话与工作流 | **在维护**，最近提交时间为 2026-04 |
-| `zbirenbaum/copilot.lua` | Copilot 接入 | **在维护**，最近提交时间为 2026-04 |
+| `akinsho/toggleterm.nvim` | 内置终端 | **在维护** |
+| `romgrk/barbar.nvim` | Buffer 标签栏 | **在维护** |
 | `mistweaverco/kulala.nvim` | HTTP / API 客户端 | **在维护**，最近提交时间为 2026-04 |
 | `numToStr/Comment.nvim` | 注释操作 | **稳定可用**，最近提交时间为 2024-06，更新频率低于上面几项，但插件成熟、使用广泛 |
+| `folke/flash.nvim` | 屏内标签跳转 | **在维护** |
 
 ## 说明
 
 - 大多数弹窗都已统一去边框，界面更干净。
 - 补全窗口、悬停文档、诊断浮窗、Oil 浮窗等都使用无边框样式。
-- 同时保留 Oil 与 Neo-tree：
+- 同时保留 Oil、mini.files 与 Neo-tree：
   - **Oil** 适合轻量查看和直接编辑目录
   - **Neo-tree** 适合持续驻留的文件树浏览
+  - **mini.files** 提供额外的迷你文件导航
 - Markdown 现在支持：
   - **原始文本视图**
   - **渲染后的阅读视图**
   - **侧边预览视图**
-- AI 工作流现在默认接入 Copilot，并补充了中文 prompts 与前端专用 prompts。
+- 已移除内嵌 AI 插件（Copilot / CodeCompanion / Avante）；需要 AI 时用 ToggleTerm 侧边终端运行外部 agent CLI。
 - Kulala 已接入，可在 Neovim 内直接编写并发送 `.http` / `.rest` 请求。
+- Flash 已接入（终端与 VSCode 共用配置）：`s` 屏内跳转，`S` Treesitter 选区；与 Telescope 分工明确。

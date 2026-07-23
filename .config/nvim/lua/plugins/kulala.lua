@@ -79,6 +79,9 @@ require("kulala").setup({
         desc = "HTTP symbols (aerial)",
       },
     },
+    on_attach = function(_client, bufnr)
+      vim.bo[bufnr].formatexpr = "v:lua.vim.lsp.formatexpr()"
+    end,
   },
   global_keymaps = true,
   global_keymaps_prefix = "<leader>R",

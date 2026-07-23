@@ -20,6 +20,7 @@ require("auto-session").setup({
     "neo-tree",
     "neo-tree-popup",
     "minifiles",
+    "oil",
     "undotree",
   },
   session_lens = {

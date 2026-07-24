@@ -63,12 +63,17 @@ require("mason-lspconfig").setup({
 require("mason-tool-installer").setup({
   ensure_installed = {
     "black",
+    "clang-format",
     "debugpy",
     "delve",
     "eslint_d",
     "gofumpt",
     "goimports",
     "isort",
+    "java-debug-adapter",
+    "java-test",
+    "jdtls",
+    "js-debug-adapter",
     "kulala-fmt",
     "prettierd",
     "ruff",
@@ -76,6 +81,7 @@ require("mason-tool-installer").setup({
     "shfmt",
     "stylua",
     "vue-language-server",
+    "yamllint",
   },
 })
 

@@ -1,4 +1,5 @@
 require("config.options")
 require("config.diagnostics")
 require("config.autocmds")
+require("config.rooter")
 require("config.keymaps")

@@ -26,10 +26,8 @@ end
 
 vim.keymap.set("n", "<leader>wc", cd_to_current_file, { desc = "[W]orkspace [C]d to current file dir" })
 
--- Resize the currently focused window (neo-tree | editor | AI/terminal layouts).
--- Count works: 5<A-l> widens by 5 columns.
+-- Arrow-key resize fallback (Alt+hjkl is owned by smart-splits for nvim/tmux).
 local function resize_win(dir)
-  -- Default step 2; prefix count overrides, e.g. 5<A-l>
   local step = vim.v.count > 0 and vim.v.count or 2
   if dir == "left" then
     vim.cmd("vertical resize -" .. step)
@@ -43,10 +41,6 @@ local function resize_win(dir)
 end
 
 local resize_maps = {
-  { "<A-h>", "left", "Resize window narrower" },
-  { "<A-l>", "right", "Resize window wider" },
-  { "<A-k>", "up", "Resize window shorter" },
-  { "<A-j>", "down", "Resize window taller" },
   { "<C-Left>", "left", "Resize window narrower" },
   { "<C-Right>", "right", "Resize window wider" },
   { "<C-Up>", "up", "Resize window shorter" },

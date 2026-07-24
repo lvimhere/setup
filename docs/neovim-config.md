@@ -7,7 +7,8 @@
 - **目标版本：** Neovim 0.12
 - **包管理方式：** 内置 `vim.pack`
 - **Leader 键：** `<Space>`
-- **定位：** 面向编码的全能型工作流，覆盖补全、LSP、格式化、Lint、搜索、屏内跳转（Flash）、HTTP 请求、文件浏览、终端、Git、调试、测试与 Markdown 渲染。内嵌 AI 插件已移除；需要 AI 时在侧边终端运行外部 agent CLI（如 Cursor `agent`、Claude Code 等）。
+- **LocalLeader 键：** `,`（供 grug-far 等插件的 buffer 内快捷键使用）
+- **定位：** 面向编码的全能型工作流，覆盖补全、LSP、格式化、Lint、搜索、项目替换、屏内跳转（Flash）、HTTP 请求、文件浏览、终端、Git、调试、测试与 Markdown 渲染。内嵌 AI 插件已移除；需要 AI 时在侧边终端运行外部 agent CLI（如 Cursor `agent`、Claude Code 等）。
 
 ## 配置结构
 
@@ -20,6 +21,7 @@
     │   ├── options.lua
     │   ├── diagnostics.lua
     │   ├── autocmds.lua
+    │   ├── rooter.lua
     │   └── keymaps.lua
     └── plugins/
         ├── init.lua
@@ -34,6 +36,7 @@
         ├── frontend.lua
         ├── markdown.lua
         ├── search.lua
+        ├── replace.lua
         ├── flash.lua
         ├── kulala.lua
         ├── mini_files.lua
@@ -46,9 +49,19 @@
         ├── dap.lua
         ├── test.lua
         ├── ui.lua
+        ├── smart_splits.lua
         ├── toggleterm.lua
         ├── barbar.lua
         └── editing.lua
+
+另有：
+
+```text
+~/.config/nvim/ftplugin/java.lua   # nvim-jdtls + Java DAP
+```
+
+```text
+~/.config/tmux/tmux.conf   # WSL 推荐：与 smart-splits 联动的窗格导航
 ```
 
 ## 环境分流
@@ -146,7 +159,7 @@ Neovim 在 `WAYLAND_DISPLAY` 已设置但 Wayland socket 不存在时，仍可�
 
 **已配置的 Treesitter 语言**
 
-`bash`、`c`、`cpp`、`css`、`go`、`html`、`javascript`、`json`、`lua`、`markdown`、`markdown_inline`、`python`、`rust`、`tsx`、`typescript`、`vim`、`vimdoc`、`yaml`
+`bash`、`c`、`cpp`、`css`、`dockerfile`、`go`、`graphql`、`html`、`java`、`javascript`、`json`、`lua`、`markdown`、`markdown_inline`、`python`、`rust`、`sql`、`toml`、`tsx`、`typescript`、`vim`、`vimdoc`、`vue`、`yaml`
 
 ### 补全与代码片段
 
@@ -234,18 +247,24 @@ Neovim 在 `WAYLAND_DISPLAY` 已设置但 Wayland socket 不存在时，仍可�
 **Mason 确保安装的工具**
 
 - `black`
+- `clang-format`
 - `debugpy`
 - `delve`
 - `eslint_d`
 - `gofumpt`
 - `goimports`
 - `isort`
+- `java-debug-adapter`
+- `java-test`
+- `jdtls`
+- `js-debug-adapter`
 - `prettierd`
 - `ruff`
 - `shellcheck`
 - `shfmt`
 - `stylua`
 - `vue-language-server`
+- `yamllint`
 
 ### 格式化与 Lint
 
@@ -273,6 +292,7 @@ Neovim 在 `WAYLAND_DISPLAY` 已设置但 Wayland socket 不存在时，仍可�
 | `javascript`、`javascriptreact`、`typescript`、`typescriptreact`、`vue` | `eslint_d` |
 | `python` | `ruff` |
 | `sh` | `shellcheck` |
+| `yaml` | `yamllint` |
 
 **自动格式化触发规则**
 
@@ -348,12 +368,14 @@ Neovim 在 `WAYLAND_DISPLAY` 已设置但 Wayland socket 不存在时，仍可�
 | 插件 | 作用 | 说明 |
 | --- | --- | --- |
 | `nvim-telescope/telescope.nvim` | 模糊搜索与选择器 | 主搜索入口（跨文件 / 符号 / 帮助等） |
+| `MagicDuck/grug-far.nvim` | 项目级搜索替换 | 基于 ripgrep 的可预览替换 UI |
 | `folke/flash.nvim` | 屏内标签跳转 | 在当前可见区域快速跳转；终端与 VSCode Neovim 均启用 |
 | `nvim-lua/plenary.nvim` | Telescope 依赖 | 通用 Lua 工具库 |
 
 **分工**
 
 - **Telescope**：找文件、全库 grep、buffer / 帮助等选择器
+- **grug-far**：全库 / 选区搜索并替换（`<leader>sR`）
 - **Flash**：当前窗口（可多窗）内用标签秒跳；增强 `f`/`t`/`F`/`T`；可选 Treesitter 选区
 
 **Flash 当前行为**
@@ -363,6 +385,11 @@ Neovim 在 `WAYLAND_DISPLAY` 已设置但 Wayland socket 不存在时，仍可�
 - `f`/`t`/`F`/`T` 开启 jump labels
 - 配置集中在 `lua/plugins/flash.lua`，终端与 VSCode 共用
 
+**grug-far 当前行为**
+
+- 打开后使用 `<localleader>`（`,`）触发 buffer 内操作（替换、同步、关闭等），详见插件内 `g?`
+- 依赖系统 `rg`（ripgrep）
+
 ### 会话、结构与折叠
 
 | 插件 | 作用 | 说明 |
@@ -371,6 +398,12 @@ Neovim 在 `WAYLAND_DISPLAY` 已设置但 Wayland socket 不存在时，仍可�
 | `stevearc/aerial.nvim` | 代码结构大纲 | 查看并跳转当前文件中的符号结构 |
 | `kevinhwang91/nvim-ufo` | 折叠增强 | 用 LSP/indent 提供更稳定的折叠体验 |
 | `kevinhwang91/promise-async` | `nvim-ufo` 依赖 | 异步依赖 |
+
+**项目根目录（`config/rooter.lua`）**
+
+- 打开 buffer 时自动 `cd` 到最近项目根（`.git` / `package.json` / `go.mod` / `Cargo.toml` / `pyproject.toml` 等）
+- 手动同步：`<leader>wp`
+- 切到**当前文件所在目录**仍用：`<leader>wc`
 
 **当前行为**
 
@@ -388,16 +421,15 @@ Neovim 在 `WAYLAND_DISPLAY` 已设置但 Wayland socket 不存在时，仍可�
 | --- | --- | --- |
 | `stevearc/oil.nvim` | 轻量目录浏览器 | 像编辑 buffer 一样操作目录 |
 | `nvim-neo-tree/neo-tree.nvim` | 完整文件树 | 左侧边栏文件树 / buffers / git status |
-| `nvim-mini/mini.files` | 迷你文件浏览器 | 额外的轻量目录导航 |
+| `nvim-mini/mini.files` | 迷你文件浏览器 | 普通模式 `-` 打开；Oil 用 `<leader>of` |
 | `MunifTanjim/nui.nvim` | Neo-tree 依赖 | UI 依赖 |
 | `nvim-tree/nvim-web-devicons` | 文件图标 | 提供文件、目录、状态图标 |
 
 **Oil 特点**
 
 - **不是**默认文件浏览器（`default_file_explorer = false`），netrw 劫持交给 Neo-tree
-- 浮窗无边框，`<leader>of` 可单独打开 Oil 浮窗
-- `-` 在普通模式下打开当前文件所在目录的 Oil 视图
-- Oil 内保留默认导航逻辑，按 `-` 返回父目录，按 `<CR>` 打开条目
+- 浮窗无边框，`<leader>of` 打开 / 切换 Oil 浮窗（全局入口）
+- Oil buffer 内保留默认导航：按 `-` 返回父目录，按 `<CR>` 打开条目
 - 默认显示隐藏文件，但始终隐藏 `..` 和 `.git`
 - `q` 关闭 Oil，`<C-r>` 刷新，`<C-p>` 预览，`g.` 切换隐藏文件显示
 
@@ -462,6 +494,32 @@ Neovim 在 `WAYLAND_DISPLAY` 已设置但 Wayland socket 不存在时，仍可�
 | `mfussenegger/nvim-dap` | DAP 调试核心 | 提供调试能力 |
 | `rcarriga/nvim-dap-ui` | 调试 UI | 调试开始时自动打开，结束时自动关闭 |
 | `theHamsta/nvim-dap-virtual-text` | 行内调试变量显示 | 调试时直接在代码旁显示变量值 |
+| `leoluz/nvim-dap-go` | Go 调试配置 | 基于 Mason 安装的 `delve` |
+| `mfussenegger/nvim-jdtls` | Java LSP + 调试桥接 | 通过 `ftplugin/java.lua` 启动；捆绑 `java-debug-adapter` / `java-test` |
+
+**已接线的调试语言**
+
+| 语言 | 适配器 | 说明 |
+| --- | --- | --- |
+| Go | `delve` + `nvim-dap-go` | `<F5>` 启动；`<leader>dgt` 调试最近测试 |
+| JavaScript / TypeScript | Mason `js-debug-adapter`（pwa-node / pwa-chrome） | 启动当前文件、npm `debug` 脚本、附加进程、Chrome |
+| Java | `jdtls` + `java-debug-adapter` + `java-test` | 打开 `.java` 时由 nvim-jdtls 注册；可调试 main / JUnit |
+
+**Java 重要前提**
+
+- **运行 jdtls 需要 JDK 21+**（与项目编译目标无关；项目仍可用 8/11/17）
+- 当前机器若只有 JDK 8，请先安装 21，例如：`sudo pacman -S jdk21-openjdk`
+- 或把 Temurin 21 放到 `~/.local/jdks/temurin-21`，或设置环境变量 `JDTLS_JAVA_HOME`
+- 项目用的 JDK 8 会作为 `JavaSE-1.8` runtime 注册给 jdtls
+
+**Mason 确保安装的调试相关工具**
+
+- `delve`
+- `js-debug-adapter`
+- `jdtls`
+- `java-debug-adapter`
+- `java-test`
+- `debugpy`（Python，既有）
 
 ### 测试
 
@@ -480,15 +538,24 @@ Neovim 在 `WAYLAND_DISPLAY` 已设置但 Wayland socket 不存在时，仍可�
 | 插件 | 作用 | 说明 |
 | --- | --- | --- |
 | `romgrk/barbar.nvim` | Buffer 标签栏 | 顶部 buffer 标签，配合 `]b` / `[b` 与 `<S-h>` / `<S-l>` |
-| `nvim-lualine/lualine.nvim` | 状态栏 | 使用简洁分隔符，启用全局状态栏；文件名显示相对路径 |
+| `nvim-lualine/lualine.nvim` | 状态栏 | 简洁分隔符 + `globalstatus`；单独开 nvim 时在窗口底显示 |
+| `vimpostor/vim-tpipeline` | 把 lualine 嵌进 tmux 底栏 | 仅在 `$TMUX` 下生效；保留 mode / git / 文件 / 诊断 |
 | `folke/which-key.nvim` | 快捷键提示 | 用于提示 Leader 键分组 |
 | `akinsho/toggleterm.nvim` | 内置终端 | 默认浮动终端；可水平 / 垂直分屏，适合侧边跑 agent CLI |
+| `mrjones2014/smart-splits.nvim` | 分屏 / tmux 窗格导航 | `<C-hjkl>` 移动，`<A-hjkl>` 缩放；与 `~/.config/tmux/tmux.conf` 联动 |
 | `windwp/nvim-autopairs` | 自动补全括号与引号 | 默认启用 |
 | `numToStr/Comment.nvim` | 注释操作 | 提供 `gcc`、`gbc`、文本对象注释等 |
 | `kylechui/nvim-surround` | 环绕编辑 | 提供增删改包裹符、标签、函数调用等 |
 | `nvim-mini/mini.ai` | 文本对象增强 | 增强 `a` / `i` 文本对象选择能力 |
 | `mbbill/undotree` | Undo 树可视化 | 浏览分支式撤销历史 |
 | `folke/todo-comments.nvim` | 高亮 TODO 类注释 | 默认启用 |
+
+**与 tmux 底栏的分工**
+
+- **非 nvim 的 tmux 窗格**：普通 tmux status（会话 / 窗口列表等）始终可用
+- **nvim 在 tmux 内**：`laststatus=0`（不占第二行），由 **tpipeline** 把完整 lualine 嵌进 tmux 底栏（mode、branch、diff、filename、diagnostics…）
+- **单独开 nvim**（无 `$TMUX`）：正常显示 lualine
+- 不隐藏 Barbar 顶部 tabline
 
 ## 快捷键
 
@@ -503,7 +570,7 @@ Neovim 在 `WAYLAND_DISPLAY` 已设置但 Wayland socket 不存在时，仍可�
 | 普通模式 | `<leader>bb` | 切换到上一个使用过的 buffer |
 | 普通模式 | `]t` | 切换到下一个 tabpage |
 | 普通模式 | `[t` | 切换到上一个 tabpage |
-| 普通模式 | `-` | 打开 Oil |
+| 普通模式 | `-` | 打开 mini.files（当前文件目录） |
 | 普通模式 | `<leader>of` | 切换 Oil 浮窗 |
 | 普通模式 | `<leader>ee` | 切换 Neo-tree 侧边栏 |
 | 普通模式 | `<leader>E` | 在 Neo-tree 中定位当前文件 |
@@ -512,14 +579,17 @@ Neovim 在 `WAYLAND_DISPLAY` 已设置但 Wayland socket 不存在时，仍可�
 | 普通模式 | `<leader>eb` | 打开 Neo-tree buffers 视图 |
 | 普通模式 | `<leader>eg` | 打开 Neo-tree git_status 视图 |
 | 普通模式 | `<leader>es` | 关闭 Neo-tree |
-| 普通 / 插入 / 终端 | `<A-h>` / `<C-Left>` | 当前窗口变窄 |
-| 普通 / 插入 / 终端 | `<A-l>` / `<C-Right>` | 当前窗口变宽 |
-| 普通 / 插入 / 终端 | `<A-k>` / `<C-Up>` | 当前窗口变矮 |
-| 普通 / 插入 / 终端 | `<A-j>` / `<C-Down>` | 当前窗口变高 |
+| 普通 / 插入 / 终端 | `<C-Left>` | 当前窗口变窄 |
+| 普通 / 插入 / 终端 | `<C-Right>` | 当前窗口变宽 |
+| 普通 / 插入 / 终端 | `<C-Up>` | 当前窗口变矮 |
+| 普通 / 插入 / 终端 | `<C-Down>` | 当前窗口变高 |
+| 普通模式 | `<C-h/j/k/l>` | 在 Neovim 分屏 / tmux 窗格间移动（smart-splits） |
+| 普通模式 | `<A-h/j/k/l>` | 缩放 Neovim 分屏 / tmux 窗格（smart-splits） |
 | 普通模式 | `<leader>w=` | 均分所有窗口尺寸 |
 | 普通模式 | `<leader>w_` | 当前窗口高度最大化 |
 | 普通模式 | `<leader>w\|` | 当前窗口宽度最大化 |
 | 普通模式 | `<leader>wc` | 将 cwd 切到当前文件所在目录 |
+| 普通模式 | `<leader>wp` | 将 cwd 切到当前文件所属项目根 |
 
 ## 搜索快捷键
 
@@ -533,6 +603,8 @@ Neovim 在 `WAYLAND_DISPLAY` 已设置但 Wayland socket 不存在时，仍可�
 | 普通模式 | `<leader>sr` | 恢复上一次搜索 |
 | 普通模式 | `<leader>sh` | 搜索帮助文档 |
 | 普通模式 | `<leader>sm` | 搜索 man 手册 |
+| 普通 / 可视模式 | `<leader>sR` | 打开 grug-far 项目搜索替换 |
+| 普通模式 | `<leader>sW` | 用当前词预填打开 grug-far |
 
 ## Flash 快捷键
 
@@ -648,6 +720,7 @@ Neovim 在 `WAYLAND_DISPLAY` 已设置但 Wayland socket 不存在时，仍可�
 | 普通模式 | `<leader>wl` | 打开会话选择器 |
 | 普通模式 | `<leader>wr` | 恢复当前项目会话 |
 | 普通模式 | `<leader>wd` | 删除当前项目会话 |
+| 普通模式 | `<leader>wp` | 将 cwd 切到项目根 |
 | 普通模式 | `<leader>aa` | 在右侧切换 Aerial 大纲 |
 | 普通模式 | `<leader>af` | 以浮窗方式切换 Aerial |
 | 普通模式 | `<leader>an` | 切换 Aerial 导航窗口 |
@@ -687,8 +760,23 @@ Neovim 在 `WAYLAND_DISPLAY` 已设置但 Wayland socket 不存在时，仍可�
 | 普通模式 | `<leader>db` | 切换断点 |
 | 普通模式 | `<leader>dB` | 设置条件断点 |
 | 普通模式 | `<leader>dc` | 开始 / 继续调试 |
+| 普通模式 | `<leader>dl` | 重新运行上一次调试 |
+| 普通模式 | `<leader>dt` | 终止调试 |
 | 普通模式 | `<leader>dr` | 切换调试 REPL |
 | 普通模式 | `<leader>du` | 切换调试 UI |
+| 普通模式 | `<leader>dgt` | Go：调试最近测试 |
+| 普通模式 | `<leader>dgl` | Go：调试上一次测试 |
+
+### Java 附加快捷键（仅在 jdtls 附加后）
+
+| 模式 | 按键 | 作用 |
+| --- | --- | --- |
+| 普通模式 | `<leader>jo` | Organize imports |
+| 普通 / 可视 | `<leader>jv` | Extract variable |
+| 普通 / 可视 | `<leader>jc` | Extract constant |
+| 可视模式 | `<leader>jm` | Extract method |
+| 普通模式 | `<leader>djtc` | 调试当前测试类 |
+| 普通模式 | `<leader>djtm` | 调试最近测试方法 |
 
 ## 测试快捷键
 
@@ -762,6 +850,7 @@ Neovim 在 `WAYLAND_DISPLAY` 已设置但 Wayland socket 不存在时，仍可�
 | `<leader>e` | Explorer |
 | `<leader>g` | Git |
 | `<leader>h` | Git hunks |
+| `<leader>j` | Java |
 | `<leader>m` | Markdown |
 | `<leader>o` | Oil |
 | `<leader>R` | HTTP Request |
@@ -789,15 +878,20 @@ Neovim 在 `WAYLAND_DISPLAY` 已设置但 Wayland socket 不存在时，仍可�
 | `mistweaverco/kulala.nvim` | HTTP / API 客户端 | **在维护**，最近提交时间为 2026-04 |
 | `numToStr/Comment.nvim` | 注释操作 | **稳定可用**，最近提交时间为 2024-06，更新频率低于上面几项，但插件成熟、使用广泛 |
 | `folke/flash.nvim` | 屏内标签跳转 | **在维护** |
+| `MagicDuck/grug-far.nvim` | 项目搜索替换 | **在维护** |
+| `mrjones2014/smart-splits.nvim` | 分屏 / tmux 导航 | **在维护** |
+| `vimpostor/vim-tpipeline` | lualine 嵌进 tmux 底栏 | **在维护** |
+| `leoluz/nvim-dap-go` | Go DAP | **在维护** |
+| `mfussenegger/nvim-jdtls` | Java LSP/DAP | **在维护** |
 
 ## 说明
 
 - 大多数弹窗都已统一去边框，界面更干净。
 - 补全窗口、悬停文档、诊断浮窗、Oil 浮窗等都使用无边框样式。
 - 同时保留 Oil、mini.files 与 Neo-tree：
-  - **Oil** 适合轻量查看和直接编辑目录
-  - **Neo-tree** 适合持续驻留的文件树浏览
-  - **mini.files** 提供额外的迷你文件导航
+  - **mini.files**（`-`）：迷你多栏文件导航
+  - **Oil**（`<leader>of`）：浮窗轻量目录编辑；buffer 内 `-` 仍是返回父目录
+  - **Neo-tree**：适合持续驻留的文件树浏览
 - Markdown 现在支持：
   - **原始文本视图**
   - **渲染后的阅读视图**
@@ -805,3 +899,5 @@ Neovim 在 `WAYLAND_DISPLAY` 已设置但 Wayland socket 不存在时，仍可�
 - 已移除内嵌 AI 插件（Copilot / CodeCompanion / Avante）；需要 AI 时用 ToggleTerm 侧边终端运行外部 agent CLI。
 - Kulala 已接入，可在 Neovim 内直接编写并发送 `.http` / `.rest` 请求。
 - Flash 已接入（终端与 VSCode 共用配置）：`s` 屏内跳转，`S` Treesitter 选区；与 Telescope 分工明确。
+- 项目替换用 grug-far（`<leader>sR`）；`-` 给 mini.files，Oil 用 `<leader>of`。
+- WSL 推荐：**宿主机终端（Kitty / Windows Terminal）→ WSL → tmux → nvim**。Kitty 自带多窗格与 Windows/WSL 边界集成较弱，优先用 tmux；`smart-splits` + `~/.config/tmux/tmux.conf` 提供统一的 `<C-hjkl>` / `<A-hjkl>`。`<C-\>` 仍归 ToggleTerm。nvim 在 tmux 内用 **tpipeline** 把完整 lualine 嵌进 tmux 底栏。详见 [tmux-wsl.md](./tmux-wsl.md)。

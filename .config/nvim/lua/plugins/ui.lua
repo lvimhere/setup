@@ -14,6 +14,32 @@ require("lualine").setup({
   },
 })
 
+-- Inside tmux: embed lualine into the tmux status bar via vim-tpipeline
+-- (mode / git / file / diagnostics stay visible). Outside tmux: normal lualine.
+-- Non-nvim tmux panes keep the ordinary tmux status (tpipeline restores on blur).
+if vim.env.TMUX and vim.env.TMUX ~= "" then
+  -- Do not use lualine.hide(): tpipeline must still evaluate the statusline.
+  vim.g.tpipeline_autoembed = 1
+  vim.g.tpipeline_restore = 1
+  vim.opt.laststatus = 0
+  vim.opt.showmode = false
+
+  vim.api.nvim_create_autocmd({ "UIEnter", "ColorScheme", "FocusGained" }, {
+    group = vim.api.nvim_create_augroup("tpipeline_lualine", { clear = true }),
+    callback = function()
+      vim.schedule(function()
+        if vim.env.TMUX and vim.env.TMUX ~= "" then
+          -- lualine may force laststatus=3; keep a single bottom bar in tmux.
+          vim.opt.laststatus = 0
+          vim.opt.showmode = false
+        end
+      end)
+    end,
+  })
+else
+  vim.opt.showmode = false
+end
+
 require("which-key").setup({
   spec = {
     { "<leader>a", group = "[A]erial" },
@@ -23,6 +49,7 @@ require("which-key").setup({
     { "<leader>e", group = "[E]xplorer" },
     { "<leader>g", group = "[G]it" },
     { "<leader>h", group = "Git [H]unks" },
+    { "<leader>j", group = "[J]ava" },
     { "<leader>m", group = "[M]arkdown" },
     { "<leader>o", group = "[O]il" },
     { "<leader>R", group = "HTTP [R]equest" },

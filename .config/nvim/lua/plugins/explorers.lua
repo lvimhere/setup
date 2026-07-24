@@ -1,7 +1,8 @@
 local oil = require("oil")
 
 oil.setup({
-  -- Keep neo-tree as the netrw hijacker; open Oil via `-` / <leader>of.
+  -- Keep neo-tree as the netrw hijacker; open Oil via <leader>of (float).
+  -- Global `-` is reserved for mini.files.
   default_file_explorer = false,
   columns = { "icon" },
   win_options = {
@@ -181,7 +182,6 @@ require("neo-tree").setup({
   },
 })
 
-vim.keymap.set("n", "-", "<cmd>Oil<CR>", { desc = "Open parent directory" })
 vim.keymap.set("n", "<leader>of", oil.toggle_float, { desc = "[O]il [F]loat" })
 vim.keymap.set("n", "<leader>ee", "<cmd>Neotree source=filesystem position=left toggle=true<CR>",
   { desc = "[E]xplorer toggle sidebar" })

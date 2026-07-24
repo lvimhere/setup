@@ -1,5 +1,6 @@
 vim.g.mapleader = " "
-vim.g.maplocalleader = " "
+-- Plugins such as grug-far use <localleader> for buffer-local maps.
+vim.g.maplocalleader = ","
 
 require("config")
 

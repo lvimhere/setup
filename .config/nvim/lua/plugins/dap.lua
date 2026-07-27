@@ -116,6 +116,53 @@ end
 -- Java DAP adapter/configs are registered by nvim-jdtls when jdtls attaches
 -- (see ftplugin/java.lua).
 
+---------------------------------------------------------------------------
+-- C / C++ (gdb native DAP; GDB 14+)
+---------------------------------------------------------------------------
+dap.adapters.gdb = {
+  type = "executable",
+  command = "gdb",
+  args = { "-i", "dap" },
+}
+
+local function resolve_c_executable()
+  local candidates = {
+    vim.fn.getcwd() .. "/build/main",
+    vim.fn.getcwd() .. "/main",
+    vim.fn.getcwd() .. "/a.out",
+  }
+  for _, path in ipairs(candidates) do
+    if vim.fn.filereadable(path) == 1 then
+      return path
+    end
+  end
+  return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+end
+
+local c_configs = {
+  {
+    name = "Launch (build/main or prompt)",
+    type = "gdb",
+    request = "launch",
+    program = resolve_c_executable,
+    cwd = "${workspaceFolder}",
+    stopAtBeginningOfMainSubprogram = false,
+  },
+  {
+    name = "Launch (pick executable)",
+    type = "gdb",
+    request = "launch",
+    program = function()
+      return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+    end,
+    cwd = "${workspaceFolder}",
+    stopAtBeginningOfMainSubprogram = false,
+  },
+}
+
+dap.configurations.c = c_configs
+dap.configurations.cpp = c_configs
+
 vim.keymap.set("n", "<F5>", dap.continue, { desc = "Debug continue" })
 vim.keymap.set("n", "<F10>", dap.step_over, { desc = "Debug step over" })
 vim.keymap.set("n", "<F11>", dap.step_into, { desc = "Debug step into" })

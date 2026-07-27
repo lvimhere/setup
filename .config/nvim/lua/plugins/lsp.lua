@@ -162,7 +162,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     map("n", "gy", vim.lsp.buf.type_definition, "Goto type definition")
     map("n", "K", vim.lsp.buf.hover, "Hover documentation")
     map("n", "<leader>ca", vim.lsp.buf.code_action, "Code action")
-    map("n", "<leader>cr", vim.lsp.buf.rename, "Rename symbol")
+    map("n", "<leader>cR", vim.lsp.buf.rename, "Rename symbol")
     map("n", "<leader>cf", function()
       require("conform").format({ async = false, lsp_format = "fallback" })
     end, "Format buffer")

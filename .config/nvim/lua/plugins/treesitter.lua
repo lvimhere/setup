@@ -1,3 +1,5 @@
+-- nvim-treesitter (main) has no official `less` parser (see SUPPORTED_LANGUAGES.md).
+-- Keep `scss` for Vue <style lang="scss">; map .less filetype to css as a fallback.
 local treesitter_languages = {
   "bash",
   "c",
@@ -15,6 +17,7 @@ local treesitter_languages = {
   "markdown_inline",
   "python",
   "rust",
+  "scss",
   "sql",
   "toml",
   "tsx",
@@ -30,6 +33,9 @@ local ts = require("nvim-treesitter")
 ts.setup({
   install_dir = vim.fn.stdpath("data") .. "/site",
 })
+
+-- Standalone *.less buffers: reuse css highlighting (Less is CSS-superset-ish).
+pcall(vim.treesitter.language.register, "css", "less")
 
 local recommended = {}
 for _, lang in ipairs(treesitter_languages) do

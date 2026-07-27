@@ -35,6 +35,7 @@ return {
   { src = "https://github.com/kylechui/nvim-surround", version = vim.version.range("4") },
   "https://github.com/nvim-mini/mini.ai",
   "https://github.com/nvim-mini/mini.files",
+  "https://github.com/Wansmer/treesj",
   "https://github.com/mbbill/undotree",
   "https://github.com/folke/todo-comments.nvim",
   "https://github.com/lewis6991/gitsigns.nvim",

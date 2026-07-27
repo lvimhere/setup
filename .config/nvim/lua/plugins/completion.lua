@@ -36,7 +36,8 @@ require("blink.cmp").setup({
     ["<Tab>"] = { "snippet_forward", "select_next", "fallback" },
     ["<S-Tab>"] = { "snippet_backward", "select_prev", "fallback" },
     ["<CR>"] = { "select_and_accept", "fallback" },
-    ["<Esc>"] = { "cancel", "hide_documentation", "fallback" },
+    -- Do not bind <Esc>: cancel+fallback only hides the menu, so the first Esc
+    -- stays in insert. Leave insert with Esc; use <C-e> to cancel while typing.
     ["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
     ["<C-b>"] = { "scroll_documentation_up", "fallback" },
     ["<C-f>"] = { "scroll_documentation_down", "fallback" },

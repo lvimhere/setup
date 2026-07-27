@@ -61,7 +61,7 @@
 ```
 
 ```text
-~/.config/tmux/tmux.conf   # WSL 推荐：与 smart-splits 联动的窗格导航
+~/.config/tmux/tmux.conf.local   # Oh My Tmux 定制；smart-splits 窗格导航
 ```
 
 ## 环境分流
@@ -159,7 +159,9 @@ Neovim 在 `WAYLAND_DISPLAY` 已设置但 Wayland socket 不存在时，仍可�
 
 **已配置的 Treesitter 语言**
 
-`bash`、`c`、`cpp`、`css`、`dockerfile`、`go`、`graphql`、`html`、`java`、`javascript`、`json`、`lua`、`markdown`、`markdown_inline`、`python`、`rust`、`sql`、`toml`、`tsx`、`typescript`、`vim`、`vimdoc`、`vue`、`yaml`
+`bash`、`c`、`cpp`、`css`、`dockerfile`、`go`、`graphql`、`html`、`java`、`javascript`、`json`、`lua`、`markdown`、`markdown_inline`、`python`、`rust`、`scss`、`sql`、`toml`、`tsx`、`typescript`、`vim`、`vimdoc`、`vue`、`yaml`
+
+> `scss` 用于 Vue `<style lang="scss">`。官方 nvim-treesitter（main）**不支持** `less` parser（会报 `skipping unsupported language: less`）；独立 `.less` 文件回退用 `css` 高亮。
 
 ### 补全与代码片段
 
@@ -184,11 +186,11 @@ Neovim 在 `WAYLAND_DISPLAY` 已设置但 Wayland socket 不存在时，仍可�
 | `<C-n>` | 选择下一项 |
 | `<C-p>` | 选择上一项 |
 | `<C-y>` | 接受当前补全项 |
-| `<C-e>` | 取消补全 |
+| `<C-e>` | 取消补全并留在插入模式 |
 | `<Tab>` | Snippet 前跳，否则选下一项 |
 | `<S-Tab>` | Snippet 后跳，否则选上一项 |
 | `<CR>` | 接受当前补全项 |
-| `<Esc>` | 取消补全并关闭文档窗口 |
+| `<Esc>` | 始终退出插入模式（不拦截给补全，避免连按两次） |
 | `<C-Space>` | 打开补全 / 文档 |
 | `<C-b>` | 向上滚动补全文档 |
 | `<C-f>` | 向下滚动补全文档 |
@@ -387,7 +389,7 @@ Neovim 在 `WAYLAND_DISPLAY` 已设置但 Wayland socket 不存在时，仍可�
 
 **grug-far 当前行为**
 
-- 打开后使用 `<localleader>`（`,`）触发 buffer 内操作（替换、同步、关闭等），详见插件内 `g?`
+- 打开后使用 `<localleader>`（默认 `\`）触发 buffer 内操作（替换、同步、关闭等），详见插件内 `g?`
 - 依赖系统 `rg`（ripgrep）
 
 ### 会话、结构与折叠
@@ -542,11 +544,12 @@ Neovim 在 `WAYLAND_DISPLAY` 已设置但 Wayland socket 不存在时，仍可�
 | `vimpostor/vim-tpipeline` | 把 lualine 嵌进 tmux 底栏 | 仅在 `$TMUX` 下生效；保留 mode / git / 文件 / 诊断 |
 | `folke/which-key.nvim` | 快捷键提示 | 用于提示 Leader 键分组 |
 | `akinsho/toggleterm.nvim` | 内置终端 | 默认浮动终端；可水平 / 垂直分屏，适合侧边跑 agent CLI |
-| `mrjones2014/smart-splits.nvim` | 分屏 / tmux 窗格导航 | `<C-hjkl>` 移动，`<A-hjkl>` 缩放；与 `~/.config/tmux/tmux.conf` 联动 |
+| `mrjones2014/smart-splits.nvim` | 分屏 / tmux 窗格导航 | `<C-hjkl>` 移动，`<A-hjkl>` 缩放；与 `~/.config/tmux/tmux.conf.local` 联动 |
 | `windwp/nvim-autopairs` | 自动补全括号与引号 | 默认启用 |
 | `numToStr/Comment.nvim` | 注释操作 | 提供 `gcc`、`gbc`、文本对象注释等 |
 | `kylechui/nvim-surround` | 环绕编辑 | 提供增删改包裹符、标签、函数调用等 |
 | `nvim-mini/mini.ai` | 文本对象增强 | 增强 `a` / `i` 文本对象选择能力 |
+| `Wansmer/treesj` | 代码块拆分/合并 | 基于 Treesitter，一键展开或折叠 `{}`、参数列表等 |
 | `mbbill/undotree` | Undo 树可视化 | 浏览分支式撤销历史 |
 | `folke/todo-comments.nvim` | 高亮 TODO 类注释 | 默认启用 |
 
@@ -647,7 +650,8 @@ Neovim 在 `WAYLAND_DISPLAY` 已设置但 Wayland socket 不存在时，仍可�
 | 普通模式 | `K` | 查看悬停文档 |
 | 普通模式 | `gr` | 通过 Trouble 查看引用 |
 | 普通模式 | `<leader>ca` | 代码操作 |
-| 普通模式 | `<leader>cr` | 重命名符号 |
+| 普通模式 | `<leader>cr` | 编译并运行当前 C/C++ 文件（浮动终端；优先 clang/clang++） |
+| 普通模式 | `<leader>cR` | 重命名符号 |
 | 普通模式 | `<leader>cf` | 格式化当前缓冲区 |
 | 普通模式 | `<leader>cd` | 查看当前行诊断信息 |
 | 普通模式 | `[d` | 跳到上一条诊断 |
@@ -728,12 +732,14 @@ Neovim 在 `WAYLAND_DISPLAY` 已设置但 Wayland socket 不存在时，仍可�
 | 普通模式 | `zM` | 关闭所有折叠 |
 | 普通模式 | `zp` | 预览当前折叠内容 |
 | 普通模式 | `<leader>uu` | 切换 UndoTree |
+| 普通模式 | `gS` | 切换当前 Treesitter 节点的拆分 / 合并（treesj） |
 
 **编辑增强说明**
 
 - `Comment.nvim` 默认启用主流注释键位：`gcc`、`gbc`、`gc` / `gb` + motion
 - `nvim-surround` 默认启用主流环绕编辑键位：`ys`、`ds`、`cs`
 - `mini.ai` 会增强原生 `a` / `i` 文本对象体验
+- `treesj`：`gS` 切换当前节点的拆分 / 合并（已关闭默认 `<space>m/j/s`，避免与 Leader 冲突）
 
 **AutoSession 当前命令**
 
@@ -806,6 +812,7 @@ Neovim 在 `WAYLAND_DISPLAY` 已设置但 Wayland socket 不存在时，仍可�
 | 普通模式 | `<leader>ts` | 选择终端 |
 | 普通模式 | `<leader>ta` | 切换全部终端显示 |
 | 普通模式 | `<leader>t1`–`<leader>t3` | 切换终端 1–3 |
+| 普通模式 | `<leader>tr` | 按文件类型运行测试套件（pytest / go test 等） |
 | 普通模式 | `<leader>tg` | 浮动窗口运行 `git status` |
 | 普通模式 | `<leader>tH` | 浮动窗口运行 `htop`（需已安装） |
 | 终端模式 | `<Esc>` | 退出终端插入模式到 Normal |
@@ -873,6 +880,7 @@ Neovim 在 `WAYLAND_DISPLAY` 已设置但 Wayland socket 不存在时，仍可�
 | `mbbill/undotree` | Undo 树 | **在维护**，最近提交时间为 2026-03 |
 | `kylechui/nvim-surround` | 环绕编辑 | **在维护**，最近提交时间为 2026-04 |
 | `nvim-mini/mini.ai` | 文本对象增强 | **在维护**，最近提交时间为 2026-04 |
+| `Wansmer/treesj` | 代码块拆分/合并 | **在维护** |
 | `akinsho/toggleterm.nvim` | 内置终端 | **在维护** |
 | `romgrk/barbar.nvim` | Buffer 标签栏 | **在维护** |
 | `mistweaverco/kulala.nvim` | HTTP / API 客户端 | **在维护**，最近提交时间为 2026-04 |
@@ -900,4 +908,4 @@ Neovim 在 `WAYLAND_DISPLAY` 已设置但 Wayland socket 不存在时，仍可�
 - Kulala 已接入，可在 Neovim 内直接编写并发送 `.http` / `.rest` 请求。
 - Flash 已接入（终端与 VSCode 共用配置）：`s` 屏内跳转，`S` Treesitter 选区；与 Telescope 分工明确。
 - 项目替换用 grug-far（`<leader>sR`）；`-` 给 mini.files，Oil 用 `<leader>of`。
-- WSL 推荐：**宿主机终端（Kitty / Windows Terminal）→ WSL → tmux → nvim**。Kitty 自带多窗格与 Windows/WSL 边界集成较弱，优先用 tmux；`smart-splits` + `~/.config/tmux/tmux.conf` 提供统一的 `<C-hjkl>` / `<A-hjkl>`。`<C-\>` 仍归 ToggleTerm。nvim 在 tmux 内用 **tpipeline** 把完整 lualine 嵌进 tmux 底栏。详见 [tmux-wsl.md](./tmux-wsl.md)。
+- WSL 推荐：**宿主机终端（Kitty / Windows Terminal）→ WSL → tmux → nvim**。Kitty 自带多窗格与 Windows/WSL 边界集成较弱，优先用 tmux；`smart-splits` + `~/.config/tmux/tmux.conf.local` 提供统一的 `<C-hjkl>` / `<A-hjkl>`。`<C-\>` 仍归 ToggleTerm。nvim 在 tmux 内用 **tpipeline** 把完整 lualine 嵌进 tmux 底栏。详见 [tmux-wsl.md](./tmux-wsl.md)。

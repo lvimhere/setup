@@ -58,6 +58,49 @@ local function run_project_tests()
   toggleterm.exec(cmd, nil, 20, nil, "horizontal")
 end
 
+local function compile_and_run_c()
+  local ft = vim.bo.filetype
+  if ft ~= "c" and ft ~= "cpp" then
+    vim.notify("Compile & run supports filetype c/cpp (current: " .. ft .. ")", vim.log.levels.WARN)
+    return
+  end
+
+  local src = vim.api.nvim_buf_get_name(0)
+  if src == "" then
+    vim.notify("No file in current buffer", vim.log.levels.WARN)
+    return
+  end
+
+  vim.cmd.write()
+
+  local out = vim.fn.fnamemodify(src, ":r")
+  local compiler
+  if ft == "cpp" then
+    compiler = vim.fn.executable("clang++") == 1 and "clang++" or "g++"
+  else
+    compiler = vim.fn.executable("clang") == 1 and "clang" or "gcc"
+  end
+
+  if vim.fn.executable(compiler) ~= 1 then
+    vim.notify("Compiler not found: " .. compiler, vim.log.levels.ERROR)
+    return
+  end
+
+  local cmd = table.concat({
+    compiler,
+    "-Wall",
+    "-Wextra",
+    "-g",
+    "-o",
+    vim.fn.shellescape(out),
+    vim.fn.shellescape(src),
+    "&&",
+    vim.fn.shellescape(out),
+  }, " ")
+
+  toggleterm.exec(cmd, nil, 20, nil, "float")
+end
+
 local git_status = Terminal:new({
   cmd = "git status",
   dir = "git_dir",
@@ -130,6 +173,7 @@ vim.keymap.set("n", "<leader>tn", "<cmd>TermNew<CR>", { desc = "Terminal [N]ew" 
 vim.keymap.set("n", "<leader>ts", "<cmd>TermSelect<CR>", { desc = "Terminal [S]elect" })
 vim.keymap.set("n", "<leader>ta", "<cmd>ToggleTermToggleAll<CR>", { desc = "Terminal toggle [A]ll" })
 vim.keymap.set("n", "<leader>tr", run_project_tests, { desc = "Terminal [R]un test suite" })
+vim.keymap.set("n", "<leader>cr", compile_and_run_c, { desc = "[C]ompile & [R]un (C/C++)" })
 vim.keymap.set("n", "<leader>tg", function()
   git_status:toggle()
 end, { desc = "Terminal [G]it status" })

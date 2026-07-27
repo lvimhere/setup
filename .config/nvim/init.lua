@@ -1,6 +1,5 @@
 vim.g.mapleader = " "
--- Plugins such as grug-far use <localleader> for buffer-local maps.
-vim.g.maplocalleader = ","
+-- maplocalleader defaults to "\" (grug-far and other buffer-local maps use <localleader>)
 
 require("config")
 

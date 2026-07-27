@@ -6,6 +6,13 @@ require("mini.ai").setup({
 })
 require("todo-comments").setup()
 
+-- Default treesj maps use <space>m/j/s and collide with Leader.
+require("treesj").setup({
+  use_default_keymaps = false,
+  max_join_length = 120,
+})
+vim.keymap.set("n", "gS", require("treesj").toggle, { desc = "Toggle split/join node" })
+
 local function disable_undotree_builtin_last_window_exit()
   for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
     if vim.api.nvim_buf_is_valid(bufnr) and vim.b[bufnr].isUndotreeBuffer == 1 then

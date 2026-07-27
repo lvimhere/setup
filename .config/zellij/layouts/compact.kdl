@@ -1,0 +1,53 @@
+// Compact layout + zjstatus bottom bar (no powerline arrows).
+// First run: focus the bar pane and press `y` to grant plugin permissions.
+
+layout {
+    default_tab_template {
+        children
+        pane size=1 borderless=true {
+            plugin location="zjstatus" {
+                hide_frame_for_single_pane "true"
+
+                // Left: mode + session | Center: tabs | Right: git + clock
+                format_left   "{mode} #[fg=#89b4fa,bold]{session} "
+                format_center "{tabs}"
+                format_right  "{command_git_branch} {datetime}"
+                format_space  ""
+
+                border_enabled "false"
+
+                // Mode pills (text only, no )
+                mode_normal        "#[bg=#a6e3a1,fg=#11111b,bold] NORMAL "
+                mode_locked        "#[bg=#f38ba8,fg=#11111b,bold] LOCKED "
+                mode_resize        "#[bg=#f9e2af,fg=#11111b,bold] RESIZE "
+                mode_pane          "#[bg=#cba6f7,fg=#11111b,bold] PANE "
+                mode_tab           "#[bg=#89dceb,fg=#11111b,bold] TAB "
+                mode_scroll        "#[bg=#f5c2e7,fg=#11111b,bold] SCROLL "
+                mode_enter_search  "#[bg=#f5c2e7,fg=#11111b,bold] SEARCH "
+                mode_move          "#[bg=#94e2d5,fg=#11111b,bold] MOVE "
+                mode_session       "#[bg=#fab387,fg=#11111b,bold] SESSION "
+                mode_rename_tab    "#[bg=#89dceb,fg=#11111b,bold] RENAME "
+                mode_rename_pane   "#[bg=#cba6f7,fg=#11111b,bold] RENAME "
+                mode_prompt        "#[bg=#fab387,fg=#11111b,bold] PROMPT "
+                mode_tmux          "#[bg=#f9e2af,fg=#11111b,bold] TMUX "
+
+                tab_normal              "#[fg=#6c7086] {index}:{name} "
+                tab_normal_fullscreen   "#[fg=#6c7086] {index}:{name}[] "
+                tab_normal_sync         "#[fg=#6c7086] {index}:{name}* "
+                tab_active              "#[fg=#cdd6f4,bold] {index}:{name} "
+                tab_active_fullscreen   "#[fg=#cdd6f4,bold] {index}:{name}[] "
+                tab_active_sync         "#[fg=#cdd6f4,bold] {index}:{name}* "
+                tab_separator           "#[fg=#45475a]|"
+
+                command_git_branch_command    "git rev-parse --abbrev-ref HEAD"
+                command_git_branch_format     "#[fg=#a6e3a1] {stdout} "
+                command_git_branch_interval   "10"
+                command_git_branch_rendermode "static"
+
+                datetime          "#[fg=#9399b2] {format} "
+                datetime_format   "%a %m-%d %H:%M"
+                datetime_timezone "Asia/Shanghai"
+            }
+        }
+    }
+}

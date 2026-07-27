@@ -1,0 +1,56 @@
+// Local-first Zellij config (CachyOS / Wayland / fish).
+// Docs: setup/docs/zellij.md
+
+on_force_close "detach"
+
+default_shell "fish"
+default_layout "compact"
+
+// No powerline / nerd-font arrow separators in built-in UI
+simplified_ui true
+
+pane_frames true
+auto_layout true
+mouse_mode true
+copy_on_select true
+copy_command "wl-copy"
+scroll_buffer_size 100000
+styled_underlines true
+show_startup_tips false
+show_release_notes false
+
+session_serialization true
+pane_viewport_serialization true
+scrollback_lines_to_serialize 1000
+
+keybinds {
+    shared_except "locked" {
+        bind "Alt h" "Alt Left" { MoveFocusOrTab "Left"; }
+        bind "Alt l" "Alt Right" { MoveFocusOrTab "Right"; }
+        bind "Alt j" "Alt Down" { MoveFocus "Down"; }
+        bind "Alt k" "Alt Up" { MoveFocus "Up"; }
+        bind "Alt n" { NewPane; }
+        bind "Alt f" { ToggleFloatingPanes; }
+        bind "Alt =" "Alt +" { Resize "Increase"; }
+        bind "Alt -" { Resize "Decrease"; }
+    }
+}
+
+plugins {
+    tab-bar location="zellij:tab-bar"
+    status-bar location="zellij:status-bar"
+    strider location="zellij:strider"
+    compact-bar location="zellij:compact-bar"
+    session-manager location="zellij:session-manager"
+    welcome-screen location="zellij:session-manager" {
+        welcome_screen true
+    }
+    filepicker location="zellij:strider" {
+        cwd "/"
+    }
+    configuration location="zellij:configuration"
+    plugin-manager location="zellij:plugin-manager"
+    about location="zellij:about"
+    // First launch: Zellij downloads wasm and asks for permissions (press y)
+    zjstatus location="https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm"
+}

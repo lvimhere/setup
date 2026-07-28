@@ -1,4 +1,5 @@
 .config/kitty/kitty.conf.bak
+.config/zellij/plugins/*.wasm
 docker/music-tag-web/config/bin/*
 docker/music-tag-web/config/log/*
 docker/music-tag-web/config/tmp/*

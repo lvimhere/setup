@@ -29,8 +29,25 @@ ln -sfn ~/setup/.config/zellij ~/.config/zellij
 - `default_layout "compact"`：单行底栏
 - `simplified_ui true`：不用 powerline 尖角字体
 - 底栏插件：**zjstatus**（模式 / 会话 / tabs / git 分支 / 时间）
+- `hide_frame_for_single_pane` 必须为 **false**（Zellij 0.44.x 下开会触发窗口抖动 / 反复重布局）
 
-首次打开 compact 布局时，Zellij 会下载 `zjstatus.wasm` 并弹出权限请求：焦点移到底栏，按 **`y`** 授权。
+插件二进制（不进 git）：
+
+```bash
+mkdir -p ~/.config/zellij/plugins
+curl -fsSL -L -o ~/.config/zellij/plugins/zjstatus.wasm \
+  https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm
+```
+
+首次打开时一般会弹出权限浮窗，按 **`y`**。若底栏仍空：
+
+```bash
+# 不要附着旧会话；先清掉再全新启动
+zellij delete-all-sessions -y -f
+zellij
+```
+
+然后焦点到底栏（或权限浮窗）再按 **`y`**。
 
 ## 日常用法
 

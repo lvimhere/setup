@@ -1,14 +1,15 @@
 // Compact layout + zjstatus bottom bar (no powerline arrows).
-// First run: focus the bar pane and press `y` to grant plugin permissions.
+// First run: a floating permission dialog may appear — press `y`.
+// Or focus the bottom bar pane and press `y`.
 
 layout {
     default_tab_template {
         children
         pane size=1 borderless=true {
-            plugin location="zjstatus" {
-                hide_frame_for_single_pane "true"
+            plugin location="file:~/.config/zellij/plugins/zjstatus.wasm" {
+                // false: hide_frame_for_single_pane=true causes resize flicker loop on Zellij 0.44.x
+                hide_frame_for_single_pane "false"
 
-                // Left: mode + session | Center: tabs | Right: git + clock
                 format_left   "{mode} #[fg=#89b4fa,bold]{session} "
                 format_center "{tabs}"
                 format_right  "{command_git_branch} {datetime}"
@@ -16,7 +17,6 @@ layout {
 
                 border_enabled "false"
 
-                // Mode pills (text only, no )
                 mode_normal        "#[bg=#a6e3a1,fg=#11111b,bold] NORMAL "
                 mode_locked        "#[bg=#f38ba8,fg=#11111b,bold] LOCKED "
                 mode_resize        "#[bg=#f9e2af,fg=#11111b,bold] RESIZE "

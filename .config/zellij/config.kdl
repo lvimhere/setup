@@ -24,6 +24,11 @@ pane_viewport_serialization true
 scrollback_lines_to_serialize 1000
 
 keybinds {
+    // Free Ctrl-b for Neovim (cmp doc scroll, etc.) — disable Zellij "tmux mode"
+    shared_except "tmux" "locked" {
+        unbind "Ctrl b"
+    }
+
     shared_except "locked" {
         bind "Alt h" "Alt Left" { MoveFocusOrTab "Left"; }
         bind "Alt l" "Alt Right" { MoveFocusOrTab "Right"; }

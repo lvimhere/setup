@@ -1,5 +1,7 @@
 .config/kitty/kitty.conf.bak
 .config/zellij/plugins/*.wasm
+# TPM installs plugins locally; reinstall with <prefix> I
+.config/tmux/plugins/
 docker/music-tag-web/config/bin/*
 docker/music-tag-web/config/log/*
 docker/music-tag-web/config/tmp/*

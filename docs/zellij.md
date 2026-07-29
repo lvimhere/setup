@@ -74,8 +74,9 @@ zellij ls              # 列出会话
 | `Ctrl n` | Resize 模式 |
 | `Ctrl o` | Session 模式（`d` detach） |
 | `Ctrl g` | 锁定 / 解锁（锁住后快捷键不抢应用） |
-| `Ctrl b` | 类 tmux 前缀模式（偶尔肌肉记忆） |
 | `Ctrl q` | 退出会话 |
+
+**已关闭** 默认的 `Ctrl-b`（Zellij「tmux 模式」），避免和 Neovim `<C-b>` 冲突。分屏/会话请用上面的 `Alt-*` / `Ctrl-p/t/o`。
 
 Neovim 里继续用 `Ctrl-hjkl`（smart-splits）；Zellij 窗格导航优先用 `Alt-hjkl`，避免打架。
 

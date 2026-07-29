@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# Portable stdin → system clipboard for Zellij / scripts.
+# Order: win32yank (WSL) → wl-copy (Wayland) → xclip/xsel → clip.exe
+
+set -euo pipefail
+
+wayland_socket_ready() {
+  local display="${WAYLAND_DISPLAY:-}"
+  [[ -n "$display" ]] || return 1
+  local socket="$display"
+  if [[ "$display" != /* ]]; then
+    local runtime="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+    socket="$runtime/$display"
+  fi
+  [[ -S "$socket" ]]
+}
+
+if [[ -x "${HOME}/.local/bin/win32yank.exe" ]]; then
+  exec "${HOME}/.local/bin/win32yank.exe" -i --crlf
+fi
+
+if [[ -x "/mnt/c/Program Files/Neovim/bin/win32yank.exe" ]]; then
+  exec "/mnt/c/Program Files/Neovim/bin/win32yank.exe" -i --crlf
+fi
+
+if wayland_socket_ready && command -v wl-copy >/dev/null 2>&1; then
+  exec wl-copy
+fi
+
+if command -v xclip >/dev/null 2>&1; then
+  exec xclip -selection clipboard
+fi
+
+if command -v xsel >/dev/null 2>&1; then
+  exec xsel --clipboard --input
+fi
+
+if command -v clip.exe >/dev/null 2>&1; then
+  exec clip.exe
+fi
+
+# No provider: drain stdin so callers don't hang, then fail.
+cat >/dev/null
+exit 1

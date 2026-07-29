@@ -1,19 +1,27 @@
-// Local-first Zellij config (CachyOS / Wayland / fish).
+// Portable Zellij config for native Linux + WSL.
 // Docs: setup/docs/zellij.md
 
 on_force_close "detach"
 
-default_shell "fish"
+// Omit default_shell so Zellij uses $SHELL (bash on WSL, fish on native, etc.).
 default_layout "compact"
 
 // No powerline / nerd-font arrow separators in built-in UI
 simplified_ui true
 
+// Catppuccin Mocha + muted pane borders (see themes/catppuccin-mocha-muted.kdl)
+theme "catppuccin-mocha-muted"
+
+// Start Locked so Ctrl-p/t/o/n/s/h don't steal from Neovim (Telescope, blink, jumplist…).
+// Unlock with Ctrl-g when you need full Pane/Tab/Session modes.
+default_mode "locked"
+
 pane_frames true
 auto_layout true
 mouse_mode true
 copy_on_select true
-copy_command "wl-copy"
+// Portable clipboard helper: setup/.config/shell/clipcopy → ~/.local/bin/clipcopy
+copy_command "clipcopy"
 scroll_buffer_size 100000
 styled_underlines true
 show_startup_tips false
@@ -29,6 +37,20 @@ keybinds {
         unbind "Ctrl b"
     }
 
+    // Locked whitelist: navigate / float without unlocking (Ctrl-* still passes to nvim).
+    locked {
+        bind "Ctrl g" { SwitchToMode "Normal"; }
+        bind "Alt h" "Alt Left" { MoveFocusOrTab "Left"; }
+        bind "Alt l" "Alt Right" { MoveFocusOrTab "Right"; }
+        bind "Alt j" "Alt Down" { MoveFocus "Down"; }
+        bind "Alt k" "Alt Up" { MoveFocus "Up"; }
+        bind "Alt n" { NewPane; }
+        bind "Alt f" { ToggleFloatingPanes; }
+        bind "Alt =" "Alt +" { Resize "Increase"; }
+        bind "Alt -" { Resize "Decrease"; }
+    }
+
+    // Same Alt binds when unlocked (Normal / other modes except Locked).
     shared_except "locked" {
         bind "Alt h" "Alt Left" { MoveFocusOrTab "Left"; }
         bind "Alt l" "Alt Right" { MoveFocusOrTab "Right"; }

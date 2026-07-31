@@ -57,6 +57,11 @@
       "rev": "0f6a5d0d7a70659b11bbcd6b3673ee0fe61b6024",
       "src": "https://github.com/MagicDuck/grug-far.nvim"
     },
+    "harpoon": {
+      "rev": "87b1a3506211538f460786c23f98ec63ad9af4e5",
+      "src": "https://github.com/ThePrimeagen/harpoon",
+      "version": "'harpoon2'"
+    },
     "kulala.nvim": {
       "rev": "5a2883ce52bc5feb6eb1f0ddd19de06bb4033144",
       "src": "https://github.com/mistweaverco/kulala.nvim"

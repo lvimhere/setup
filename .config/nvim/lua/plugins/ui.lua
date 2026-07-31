@@ -52,6 +52,7 @@ require("which-key").setup({
     { "<leader>j", group = "[J]ava" },
     { "<leader>m", group = "[M]arkdown" },
     { "<leader>o", group = "[O]il" },
+    { "<leader>p", group = "Har[P]oon" },
     { "<leader>R", group = "HTTP [R]equest" },
     { "<leader>s", group = "[S]earch" },
     { "<leader>t", group = "Terminal" },

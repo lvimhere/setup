@@ -44,6 +44,7 @@ return {
   "https://github.com/akinsho/git-conflict.nvim",
   "https://github.com/akinsho/toggleterm.nvim",
   "https://github.com/folke/trouble.nvim",
+  { src = "https://github.com/ThePrimeagen/harpoon", version = "harpoon2" },
   "https://github.com/mfussenegger/nvim-dap",
   "https://github.com/rcarriga/nvim-dap-ui",
   "https://github.com/theHamsta/nvim-dap-virtual-text",

@@ -1,6 +1,7 @@
 return {
   "https://github.com/catppuccin/nvim",
   "https://github.com/nvim-treesitter/nvim-treesitter",
+  { src = "https://github.com/nvim-treesitter/nvim-treesitter-textobjects", version = "main" },
   "https://github.com/saghen/blink.cmp",
   "https://github.com/L3MON4D3/LuaSnip",
   "https://github.com/rafamadriz/friendly-snippets",

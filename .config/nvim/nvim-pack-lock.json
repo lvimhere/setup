@@ -180,6 +180,11 @@
       "rev": "4916d6592ede8c07973490d9322f187e07dfefac",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter"
     },
+    "nvim-treesitter-textobjects": {
+      "rev": "578b9952e2f99a057c88ddac66fe903431c6ef6a",
+      "src": "https://github.com/nvim-treesitter/nvim-treesitter-textobjects.git",
+      "version": "'main'"
+    },
     "nvim-ufo": {
       "rev": "ab3eb124062422d276fae49e0dd63b3ad1062cfc",
       "src": "https://github.com/kevinhwang91/nvim-ufo"

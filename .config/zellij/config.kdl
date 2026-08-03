@@ -18,6 +18,8 @@ default_mode "locked"
 
 pane_frames true
 auto_layout true
+// 关闭 stacked resize：Alt +/- 只调整大小，不再把相邻 pane 叠起，也不会把已叠起的 pane 拆开
+stacked_resize false
 mouse_mode true
 copy_on_select true
 // Portable clipboard helper: setup/.config/shell/clipcopy → ~/.local/bin/clipcopy

@@ -1,5 +1,6 @@
-// Catppuccin Mocha with muted pane frames (less visual noise).
-// Unselected: surface0 · Selected: surface2 · Mode highlight: blue
+// Catppuccin Mocha with muted inactive frames.
+// Unselected: surface0 · Focus: green · Hover/mode: peach
+// (same accents as upstream zellij catppuccin-mocha; inactive stays muted)
 themes {
     catppuccin-mocha-muted {
         text_unselected {
@@ -74,7 +75,7 @@ themes {
             emphasis_2 166 227 161
             emphasis_3 245 194 231
         }
-        // Pane borders — muted so content stays primary
+        // Pane borders — inactive muted; focus/hover use distinct Catppuccin accents
         frame_unselected {
             base 49 50 68
             background 0
@@ -83,21 +84,23 @@ themes {
             emphasis_2 166 227 161
             emphasis_3 249 226 175
         }
+        // Focused pane (official mocha: green)
         frame_selected {
-            base 88 91 112
+            base 166 227 161
             background 0
             emphasis_0 250 179 135
             emphasis_1 137 220 235
             emphasis_2 245 194 231
             emphasis_3 0
         }
+        // Mouse hover + non-Normal modes (official mocha: peach)
         frame_highlight {
-            base 137 180 250
+            base 250 179 135
             background 0
             emphasis_0 245 194 231
-            emphasis_1 137 180 250
-            emphasis_2 137 180 250
-            emphasis_3 137 180 250
+            emphasis_1 250 179 135
+            emphasis_2 250 179 135
+            emphasis_3 250 179 135
         }
         exit_code_success {
             base 166 227 161

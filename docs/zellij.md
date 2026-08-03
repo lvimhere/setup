@@ -35,7 +35,7 @@ ln -sfn ~/Projects/setup/.config/zellij ~/.config/zellij
 - **剪贴板**：`copy_command "clipcopy"`（`setup/.config/shell/clipcopy`，自动适配 win32yank / wl-copy / xclip）
 - `default_layout "compact"`：单行底栏
 - `simplified_ui true`：不用 powerline 尖角字体
-- **主题**：`catppuccin-mocha-muted`（窗格边框压暗：未选中 surface0、选中 surface2；进模式时用蓝色高亮）
+- **主题**：`catppuccin-mocha-muted`（未选中 surface0；焦点 green；鼠标悬停 / 进模式 peach，与上游 `catppuccin-mocha` 一致）
 - **默认 Locked**（`default_mode "locked"`）：不抢 Neovim 的 `Ctrl-p/t/o/…`；Locked 下仍可用 `Alt-*` 切窗格 / 开浮窗
 - 底栏插件：**zjstatus**（模式 / 会话 / tabs / git 分支 / 时间）
 

@@ -66,6 +66,17 @@ local servers = {
       hostInfo = "neovim",
       plugins = { vue_typescript_plugin },
     },
+    -- Unused vars/imports: eslint_d only (avoid duplicate with tsserver).
+    settings = {
+      diagnostics = {
+        ignoredCodes = {
+          6133, -- declared but its value is never read
+          6196, -- declared but never used
+          6192, -- all imports in import declaration are unused
+          6198, -- all destructured elements are unused
+        },
+      },
+    },
   },
   vue_ls = {},
   yamlls = {},

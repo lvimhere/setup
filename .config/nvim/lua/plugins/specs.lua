@@ -1,5 +1,5 @@
 return {
-  "https://github.com/catppuccin/nvim",
+  "https://github.com/sainnhe/everforest",
   "https://github.com/nvim-treesitter/nvim-treesitter",
   { src = "https://github.com/nvim-treesitter/nvim-treesitter-textobjects", version = "main" },
   "https://github.com/saghen/blink.cmp",

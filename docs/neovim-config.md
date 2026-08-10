@@ -1,6 +1,8 @@
-# Neovim 配置文档
+# Neovim 配置文档（nvim-vimpack）
 
-本文档说明当前 `~/.config/nvim` 中的 Neovim 0.12 编码配置，包括整体结构、核心行为、插件用途、维护状态与快捷键。
+> 本文档对应 `~/setup/.config/nvim-vimpack`（旧版 `vim.pack` 配置），不是当前使用的 LazyVim（`~/setup/.config/nvim`）。
+
+本文档说明该 Neovim 0.12 编码配置，包括整体结构、核心行为、插件用途、维护状态与快捷键。
 
 ## 概览
 

@@ -16,6 +16,9 @@ vim.keymap.set("i", "<A-K>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move Up" })
 vim.keymap.set("v", "<A-J>", ":<C-u>execute \"'<,'>move '>+\" . v:count1<cr>gv=gv", { desc = "Move Down" })
 vim.keymap.set("v", "<A-K>", ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv", { desc = "Move Up" })
 
+-- Drop builtin gs (:sleep) so it can be a prefix group (see mini.splitjoin).
+vim.keymap.set({ "n", "x" }, "gs", "<Nop>", { desc = "+split/join" })
+
 -- Disable macros; reuse q for the common "close window" remap.
 vim.keymap.set("n", "@", "<Nop>", { desc = "Disable macro play" })
 vim.keymap.set("n", "Q", "<Nop>", { desc = "Disable macro replay" })

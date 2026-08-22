@@ -1,6 +1,7 @@
 # Neovim 配置文档（nvim-vimpack）
 
-> 本文档对应 `~/setup/.config/nvim-vimpack`（旧版 `vim.pack` 配置），不是当前使用的 LazyVim（`~/setup/.config/nvim`）。
+> 本文档对应 `~/setup/.config/nvim-vimpack`（旧版 `vim.pack` 配置），不是当前使用的 LazyVim（`~/setup/.config/nvim`）。  
+> 当前 LazyVim 配置与 Zellij 改键说明见 [lazyvim.md](./lazyvim.md)。
 
 本文档说明该 Neovim 0.12 编码配置，包括整体结构、核心行为、插件用途、维护状态与快捷键。
 

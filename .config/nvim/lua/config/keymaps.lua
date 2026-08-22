@@ -3,6 +3,8 @@
 -- Add any additional keymaps here
 
 -- Move lines on Alt-Shift-j/k so Alt-j/k stay free for Zellij pane focus (Locked).
+-- Same policy: Snacks picker hidden/follow and LSP words-next use Alt-Shift
+-- (see lua/plugins/snacks.lua and ~/setup/docs/lazyvim.md).
 for _, lhs in ipairs({ "<A-j>", "<A-k>" }) do
   for _, mode in ipairs({ "n", "i", "v" }) do
     pcall(vim.keymap.del, mode, lhs)

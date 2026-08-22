@@ -95,13 +95,13 @@ zellij ls              # 列出会话
 
 **已关闭** 默认的 `Ctrl-b`（Zellij「tmux 模式」），避免和 Neovim `<C-b>` 冲突。
 
-Neovim 内分屏导航继续用 `Ctrl-hjkl`（smart-splits）。  
-注意：`Alt-hjkl` 优先给 **Zellij 切窗格**，不再用于 smart-splits 缩放（需要缩放 Neovim 分屏时用 `<C-Left/Right/Up/Down>` 或 `<leader>w…`）。
+当前 Neovim 是 LazyVim：窗格间移动用 `<C-hjkl>`（LazyVim 默认 `<C-w>hjkl`）。  
+`Alt-h/j/k/l/n/f` 以及 `Alt-=/+/-` **全部留给 Zellij**；撞车的 LazyVim / Snacks 功能改到 `Alt-Shift` 同字母，见 [lazyvim.md](./lazyvim.md)。
 
 ### 与 Neovim 冲突的按键
 
-对照本仓库 Zellij 默认/自定键与 Neovim 配置。  
-`<leader>…`（如 `<leader>sg`）本身不冲突；冲突出在打开 Telescope 等 UI 之后的 `Ctrl-*`，或两侧都绑了的 `Alt-*`。
+对照本仓库 Zellij 键与 **当前 LazyVim**（`~/setup/.config/nvim`）。旧版 nvim-vimpack 仍见 [neovim-config.md](./neovim-config.md)。  
+`<leader>…`（如 `<leader>ff`）本身不冲突；冲突出在 picker / LSP 里的 `Alt-*`，或解锁后的 Zellij `Ctrl-*` 模式键。
 
 #### Locked 下已交给 Neovim（不再被 Zellij 抢走）
 
@@ -118,12 +118,17 @@ Neovim 内分屏导航继续用 `Ctrl-hjkl`（smart-splits）。
 
 #### 刻意让给 Zellij 的键（Locked 白名单，仍生效）
 
-| 按键 | Zellij | Neovim 中原来的作用 | 本仓库取舍 |
+当前 Neovim 是 LazyVim（[lazyvim.md](./lazyvim.md)），不再用 nvim-vimpack 的 smart-splits `Alt-hjkl` 缩放。  
+白名单仍全部给 Zellij；LazyVim / Snacks 里撞上的功能改到 **`Alt-Shift` 同字母**。
+
+| 按键 | Zellij | LazyVim / Snacks 默认 | 本仓库取舍 |
 | --- | --- | --- | --- |
-| `Alt-h/j/k/l` | 切窗格（贴边 `h/l` 切 tab） | smart-splits：**缩放**当前分屏 | 优先 Zellij 切窗；nvim 缩放改用 `<C-方向键>` / `<leader>w…` |
-| `Alt-n` | 新窗格 | （配置中未占用） | 给 Zellij |
-| `Alt-f` | 开关浮窗 | （配置中未占用） | 给 Zellij |
-| `Alt-=` / `Alt-+` / `Alt--` | 放大 / 缩小窗格 | （配置中未占用） | 给 Zellij |
+| `Alt-h` | 切左窗格（贴边切 tab） | Snacks picker：`toggle_hidden` | 给 Zellij；picker 改为 `Alt-Shift-h`（`lua/plugins/snacks.lua`） |
+| `Alt-j` / `Alt-k` | 切下 / 上窗格 | LazyVim：上下移动行 | 给 Zellij；移动行改为 `Alt-Shift-j/k`（`lua/config/keymaps.lua`） |
+| `Alt-l` | 切右窗格（贴边切 tab） | （无对等默认映射） | 给 Zellij |
+| `Alt-n` | 新窗格 | LSP：Snacks words 下一处引用 | 给 Zellij；改为 `Alt-Shift-n`（`lua/plugins/snacks.lua`） |
+| `Alt-f` | 开关浮窗 | Snacks picker：`toggle_follow` | 给 Zellij；picker 改为 `Alt-Shift-f`（`lua/plugins/snacks.lua`） |
+| `Alt-=` / `Alt-+` / `Alt--` | 放大 / 缩小窗格 | （无对等默认映射） | 给 Zellij |
 
 #### 已解除冲突
 
@@ -135,11 +140,12 @@ Neovim 内分屏导航继续用 `Ctrl-hjkl`（smart-splits）。
 
 | 按键 / 类型 | 说明 |
 | --- | --- |
-| `<leader>sg` 等 | leader 映射 Zellij 不拦截 |
-| `Ctrl-j` / `Ctrl-k` / `Ctrl-l` | Zellij 无对应模式键 → smart-splits 正常 |
+| `<leader>ff` / `<leader>sg` 等 | leader 映射 Zellij 不拦截 |
+| `Ctrl-j` / `Ctrl-k` / `Ctrl-l` | Zellij 无对应模式键 → LazyVim 分屏跳转正常 |
 | `Ctrl-f` / `Ctrl-y` / `Ctrl-e` | blink 文档下滚 / 接受 / 取消；Zellij Normal 不抢 |
-| `Ctrl-\` | ToggleTerm 浮动终端；Zellij 不抢 |
-| `Alt-1`…`Alt-0` | barbar 切 buffer；Zellij 默认不绑 |
+| `Alt-i` | Snacks picker：toggle ignored；Zellij 未占用 |
+| `Alt-p` | Snacks words：上一处引用；Zellij 未占用 |
+| `Alt-Shift-h/f/j/k/n` | 本仓库改给 Neovim 的 picker / 移行使 / words（见上表） |
 
 ### 无需进模式（Locked / Normal 都可用）
 

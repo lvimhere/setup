@@ -9,7 +9,8 @@
 
 ### 字体
 
-- 字体：`Maple Mono NF CN`
+- 主字体：`Hack Nerd Font Mono`
+- CJK 回退：`Maple Mono NF CN`（`symbol_map` 覆盖汉字 / CJK 标点区间）
 - 字重/斜体：`auto`
 - 字号：`10.5`
 - 列宽调整：`0`

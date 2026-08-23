@@ -1,0 +1,21 @@
+# Daily: git diff / show / log -p → delta
+# Special: git dft … → difftastic (do not set diff.external globally)
+
+[core]
+	pager = delta
+
+[interactive]
+	diffFilter = delta --color-only
+
+[delta]
+	navigate = true
+	side-by-side = false
+
+[diff]
+	colorMoved = default
+
+[alias]
+	dft = "!git -c diff.external=difft diff"
+[user]
+	email = yy@yongyuan.com
+	name = jsyy

@@ -1,0 +1,165 @@
+# Tokyo Night + community layout:
+# 1. Powerline segments  2. two-line prompt  3. lean left
+# 4. language icons, no versions  5. duration / jobs / k8s / aws / time on the right
+# Official preset: https://starship.rs/presets/tokyo-night
+
+"$schema" = "https://starship.rs/config-schema.json"
+
+add_newline = true
+command_timeout = 1000
+
+format = """
+[░▒▓](#a3aed2)\
+$os\
+$username\
+[](bg:#769ff0 fg:#a3aed2)\
+$directory\
+[](fg:#769ff0 bg:#394260)\
+$git_branch\
+$git_status\
+[](fg:#394260 bg:#212736)\
+$nodejs\
+$python\
+$rust\
+$golang\
+[](fg:#212736)\
+$fill\
+$cmd_duration\
+$jobs\
+$kubernetes\
+$aws\
+$time
+$character"""
+
+[fill]
+symbol = " "
+style = "fg:#1a1b26"
+
+[os]
+disabled = false
+style = "bg:#a3aed2 fg:#090c0c"
+format = "[ $symbol ]($style)"
+
+[os.symbols]
+Windows = "󰍲"
+Ubuntu = "󰕈"
+SUSE = ""
+Raspbian = "󰐿"
+Mint = "󰣭"
+Macos = "󰀵"
+Manjaro = ""
+Linux = "󰌽"
+Gentoo = "󰣨"
+Fedora = "󰣛"
+Alpine = ""
+Amazon = ""
+Android = ""
+AOSC = ""
+Arch = "󰣇"
+Artix = "󰣇"
+CachyOS = "󰣇"
+EndeavourOS = ""
+CentOS = ""
+Debian = "󰣚"
+Redhat = "󱄛"
+RedHatEnterprise = "󱄛"
+Pop = ""
+
+[username]
+show_always = false
+style_user = "bg:#a3aed2 fg:#090c0c"
+style_root = "bg:#a3aed2 fg:#c53b53"
+format = "[ $user ]($style)"
+
+[directory]
+style = "fg:#e3e5e5 bg:#769ff0"
+format = "[ $path ]($style)"
+truncation_length = 3
+truncation_symbol = "…/"
+truncate_to_repo = true
+
+[directory.substitutions]
+"Documents" = "󰈙 "
+"Downloads" = " "
+"Music" = " "
+"Pictures" = " "
+"文档" = "󰈙 "
+"下载" = " "
+"音乐" = " "
+"图片" = " "
+
+[git_branch]
+symbol = ""
+style = "bg:#394260"
+format = "[[ $symbol $branch ](fg:#769ff0 bg:#394260)]($style)"
+
+[git_status]
+style = "bg:#394260"
+format = "[[($all_status$ahead_behind )](fg:#769ff0 bg:#394260)]($style)"
+ahead = "⇡${count}"
+behind = "⇣${count}"
+diverged = "⇕⇡${ahead_count}⇣${behind_count}"
+ignore_submodules = true
+
+[nodejs]
+symbol = ""
+style = "bg:#212736"
+format = "[[ $symbol ](fg:#769ff0 bg:#212736)]($style)"
+
+[python]
+symbol = ""
+style = "bg:#212736"
+format = "[[ $symbol( $virtualenv) ](fg:#769ff0 bg:#212736)]($style)"
+
+[rust]
+symbol = ""
+style = "bg:#212736"
+format = "[[ $symbol ](fg:#769ff0 bg:#212736)]($style)"
+
+[golang]
+symbol = ""
+style = "bg:#212736"
+format = "[[ $symbol ](fg:#769ff0 bg:#212736)]($style)"
+
+[cmd_duration]
+min_time = 3_000
+format = "[](fg:#1d2230)[  $duration ](fg:#a0a9cb bg:#1d2230)"
+
+[jobs]
+symbol = "⚙"
+number_threshold = 1
+format = "[](fg:#394260)[ $symbol $number ](fg:#769ff0 bg:#394260)"
+
+[kubernetes]
+disabled = false
+symbol = "󱃾"
+format = "[](fg:#212736)[ $symbol $context( \\($namespace\\)) ](fg:#769ff0 bg:#212736)"
+detect_files = [
+  "kustomization.yaml",
+  "kustomization.yml",
+  "Chart.yaml",
+  "skaffold.yaml",
+  "helmfile.yaml",
+]
+detect_folders = [".k8s", "k8s", "kube"]
+detect_env_vars = ["KUBECONFIG"]
+
+[aws]
+symbol = ""
+format = "[](fg:#212736)[ $symbol $profile ](fg:#769ff0 bg:#212736)"
+
+[time]
+disabled = false
+time_format = "%R"
+format = "[](fg:#1d2230)[  $time ](fg:#a0a9cb bg:#1d2230)"
+
+[character]
+success_symbol = "[❯](bold #9ece6a)"
+error_symbol = "[❯](bold #f7768e)"
+vimcmd_symbol = "[❮](bold #7aa2f7)"
+vimcmd_replace_one_symbol = "[❮](bold #e0af68)"
+vimcmd_replace_symbol = "[❮](bold #e0af68)"
+vimcmd_visual_symbol = "[❮](bold #bb9af7)"
+
+[package]
+disabled = true

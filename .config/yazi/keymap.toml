@@ -1,0 +1,38 @@
+# Only prepends. Defaults stay unless a key is reused here.
+
+[[mgr.prepend_keymap]]
+on   = "l"
+run  = "plugin smart-enter"
+desc = "Enter directory, or open file"
+
+[[mgr.prepend_keymap]]
+on   = "<Enter>"
+run  = "plugin smart-enter"
+desc = "Enter directory, or open file"
+
+[[mgr.prepend_keymap]]
+on   = "p"
+run  = "plugin smart-paste"
+desc = "Paste into hovered directory or CWD"
+
+[[mgr.prepend_keymap]]
+on   = "T"
+run  = "plugin toggle-pane max-preview"
+desc = "Maximize or restore the preview pane"
+
+[[mgr.prepend_keymap]]
+on   = "!"
+for  = "unix"
+run  = 'shell "$SHELL" --block'
+desc = "Open $SHELL here"
+
+[[mgr.prepend_keymap]]
+on  = [ "g", "r" ]
+run = 'shell -- ya emit cd "$(git rev-parse --show-toplevel)"'
+desc = "Go to current Git repository root"
+
+# yank: Yazi internal paste. copy path: system clipboard (needs wl-copy / xclip).
+[[mgr.prepend_keymap]]
+on   = "y"
+run  = [ "yank", "copy path" ]
+desc = "Yank, and copy path to the system clipboard"

@@ -1,0 +1,8 @@
+# CachyOS zsh stack without Powerlevel10k; vim keymap (see cachyos-config.zsh).
+SETUP_ROOT="${SETUP_ROOT:-$HOME/setup}"
+[[ -f "$SETUP_ROOT/.config/zsh/cachyos-config.zsh" ]] && source "$SETUP_ROOT/.config/zsh/cachyos-config.zsh"
+
+# setup shared env (clipcopy / zellij / starship)
+[[ -f "$SETUP_ROOT/.config/shell/env.sh" ]] && . "$SETUP_ROOT/.config/shell/env.sh"
+
+[[ -f "${HOME}/.config/broot/launcher/bash/br" ]] && source "${HOME}/.config/broot/launcher/bash/br"

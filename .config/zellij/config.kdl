@@ -3,7 +3,7 @@
 
 on_force_close "detach"
 
-// Omit default_shell so Zellij uses $SHELL (bash on WSL, fish on native, etc.).
+// Omit default_shell so Zellij uses $SHELL (zsh on this machine; bash on WSL).
 default_layout "compact"
 
 // No powerline / nerd-font arrow separators in built-in UI

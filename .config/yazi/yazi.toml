@@ -1,0 +1,16 @@
+# Only overrides. Defaults: https://github.com/sxyazi/yazi/tree/shipped/yazi-config/preset
+
+[preview]
+# Larger canvas so toggle-pane max-preview can use the space.
+max_width  = 1000
+max_height = 1000
+
+[[plugin.prepend_fetchers]]
+url   = "*"
+run   = "git"
+group = "git"
+
+[[plugin.prepend_fetchers]]
+url   = "*/"
+run   = "git"
+group = "git"

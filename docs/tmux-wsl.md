@@ -24,7 +24,7 @@ sudo pacman -S --needed tmux
 首次克隆 setup 后拉 submodule：
 
 ```bash
-cd ~/Projects/setup
+cd ~/setup
 git submodule update --init --recursive .config/tmux/oh-my-tmux .config/tmux/catppuccin/tmux
 # catppuccin 固定 v2.3.0 tag：若需切换版本，在 catppuccin/tmux 内 git checkout v2.3.0
 ```
@@ -32,7 +32,7 @@ git submodule update --init --recursive .config/tmux/oh-my-tmux .config/tmux/cat
 目录布局（XDG）：
 
 ```text
-~/.config/tmux  →  ~/Projects/setup/.config/tmux   # 符号链接
+~/.config/tmux  →  ~/setup/.config/tmux   # 符号链接
   tmux.conf     →  oh-my-tmux/.tmux.conf            # 勿改 upstream
   tmux.conf.local                                # 定制：Catppuccin、smart-splits、插件
   oh-my-tmux/                                    # submodule
@@ -43,7 +43,7 @@ git submodule update --init --recursive .config/tmux/oh-my-tmux .config/tmux/cat
 链接到 home（若尚未链接）：
 
 ```bash
-ln -sfn ~/Projects/setup/.config/tmux ~/.config/tmux
+ln -sfn ~/setup/.config/tmux ~/.config/tmux
 ```
 
 不要使用 `~/.tmux.conf` 或 `~/.tmux/` 的旧式路径，以免与 XDG 配置冲突。
@@ -51,7 +51,7 @@ ln -sfn ~/Projects/setup/.config/tmux ~/.config/tmux
 ## 更新 submodule
 
 ```bash
-cd ~/Projects/setup
+cd ~/setup
 git submodule update --remote .config/tmux/oh-my-tmux
 git submodule update --remote .config/tmux/catppuccin/tmux
 # 只改 tmux.conf.local，不要改 oh-my-tmux/.tmux.conf 或 catppuccin 仓库内文件

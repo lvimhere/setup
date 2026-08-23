@@ -1,6 +1,7 @@
 // Compact layout + zjstatus bottom bar (no powerline arrows).
-// First run: a floating permission dialog may appear — press `y`.
-// Or focus the bottom bar pane and press `y`.
+// First-run permission prompt is often a 1-line sliver in this bar
+// (zellij#4749). Focus the bar (click or Alt-j) and press `y`,
+// or pre-write ~/.cache/zellij/permissions.kdl — see docs/zellij.md.
 
 layout {
     default_tab_template {

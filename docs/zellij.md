@@ -25,16 +25,16 @@ sudo pacman -S --needed zellij
 仓库：`setup/.config/zellij/` → `~/.config/zellij`
 
 ```bash
-# 路径按本机仓库位置调整
-ln -sfn ~/Projects/setup/.config/zellij ~/.config/zellij
+ln -sfn ~/setup/.config/zellij ~/.config/zellij
 ```
 
 当前 UI / 可移植行为：
 
-- **不写死 shell**：省略 `default_shell`，使用 `$SHELL`（WSL 上多为 bash，原生可为 fish）
+- **不写死 shell**：省略 `default_shell`，使用 `$SHELL`（本机原生 zsh；WSL 上多为 bash）
 - **剪贴板**：`copy_command "clipcopy"`（`setup/.config/shell/clipcopy`，自动适配 win32yank / wl-copy / xclip）
 - `default_layout "compact"`：单行底栏
 - `simplified_ui true`：不用 powerline 尖角字体
+- **`stacked_resize false`**：`Alt-=/+/-` 只改大小，不会把相邻 pane 叠起来，也不会拆开已有堆叠
 - **主题**：`catppuccin-mocha-muted`（未选中 surface0；焦点 green；鼠标悬停 / 进模式 peach，与上游 `catppuccin-mocha` 一致）
 - **默认 Locked**（`default_mode "locked"`）：不抢 Neovim 的 `Ctrl-p/t/o/…`；Locked 下仍可用 `Alt-*` 切窗格 / 开浮窗
 - 底栏插件：**zjstatus**（模式 / 会话 / tabs / git 分支 / 时间）
@@ -47,15 +47,29 @@ curl -fsSL -L -o ~/.config/zellij/plugins/zjstatus.wasm \
   https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm
 ```
 
-首次打开时一般会弹出权限浮窗，按 **`y`**。若底栏仍空：
+首次打开时 **不一定会看到浮窗**：zjstatus 在 1 行底栏里，授权提示会被挤成几乎看不见的一行（[zellij#4749](https://github.com/zellij-org/zellij/issues/4749)）。
+
+授权方式（任选其一）：
+
+1. **点底栏**（或 `Alt-j` 把焦点移到底栏）再按 **`y`**
+2. 或预写权限缓存后重启会话：
 
 ```bash
-# 不要附着旧会话；先清掉再全新启动
+mkdir -p ~/.cache/zellij
+cat > ~/.cache/zellij/permissions.kdl <<EOF
+"$HOME/.config/zellij/plugins/zjstatus.wasm" {
+    ReadApplicationState
+    ChangeApplicationState
+    RunCommands
+}
+EOF
 zellij delete-all-sessions -y -f
 zellij
 ```
 
-然后焦点到底栏（或权限浮窗）再按 **`y`**。
+键必须和 layout 里 `plugin location=` 展开后的路径一致（本机是 `~/.config/zellij/plugins/zjstatus.wasm`）。
+
+若底栏仍空：不要附着旧会话，清掉再全新启动后再授权一次。
 
 ## WSL 闪退（PermissionDenied）
 
@@ -63,7 +77,7 @@ zellij
 接入 [shell.md](./shell.md) 的 `env.sh` / `env.fish` 后会自动回退到 `~/.cache/xdg-runtime`。
 
 ```bash
-source ~/.bashrc   # 或 fish: source ~/.config/fish/config.fish
+source ~/.zshrc    # 或 ~/.bashrc / fish: source ~/.config/fish/config.fish
 zellij
 ```
 
@@ -209,7 +223,7 @@ Zellij 多数操作是**两段式**：先按模式键进入模式，再按动作
 
 示例：`Ctrl-h` → `l` = 当前 pane 向右移一格，与右侧 pane 对调。
 
-> **堆叠（stacked）窗格注意**：若一边是叠起来的几个 pane，移动只会跟堆叠中**当前展开的那一个** pane 交换（上下方向甚至会把堆叠排除掉，只重排堆叠内部），看起来就像"没移动"。想干净地交换，先拆开堆叠：聚焦堆叠里的 pane 按 `Alt--` 把它拆出来，或用 `Alt-[` / `Alt-]` 换布局，再 `Ctrl-h` → 方向键。
+> **堆叠（stacked）窗格注意**：本仓库 `stacked_resize false`，`Alt-=/+/-` **不会**拆堆叠（只改大小）。堆叠仍可用 `Ctrl-p` → `s` 新建。Move 时若一边是堆叠，交换往往只跟当前展开的那一个 pane 进行。想拆开：`Ctrl-t` → `b` 把当前 pane 拆成独立 tab，或 `Ctrl-o` → `l` 开 Layout Manager。本仓库没有绑 `Alt-[` / `Alt-]`。
 
 ### `Ctrl-t` — Tab 模式
 

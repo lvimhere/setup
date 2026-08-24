@@ -1,6 +1,5 @@
--- Zellij Locked 白名单占用 Alt-h/f/n（切 pane / 浮窗 / 新窗格）。
--- Snacks 默认同键，改到 Alt-Shift，策略与 lua/config/keymaps.lua 的 Alt-Shift-j/k 一致。
--- 原因见 ~/setup/docs/lazyvim.md 与 ~/setup/docs/zellij.md。
+-- Snacks / LSP 部分默认同键改到 Alt-Shift。当初为避开 Zellij；Zellij 已作废，改键仍保留。
+-- 见 ~/setup/docs/lazyvim.md。移动行已恢复 LazyVim 默认 Alt-j/k。
 return {
   {
     "folke/snacks.nvim",

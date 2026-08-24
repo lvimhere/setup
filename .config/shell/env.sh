@@ -21,18 +21,17 @@ export EDITOR="${EDITOR:-nvim}"
 export VISUAL="${VISUAL:-${EDITOR}}"
 
 # WSL often exports XDG_RUNTIME_DIR=/run/user/$UID without creating it.
-# Zellij (and other IPC clients) then panic with PermissionDenied.
 if [ -z "${XDG_RUNTIME_DIR:-}" ] || [ ! -d "$XDG_RUNTIME_DIR" ] || [ ! -w "$XDG_RUNTIME_DIR" ]; then
   export XDG_RUNTIME_DIR="${HOME}/.cache/xdg-runtime"
   mkdir -p "$XDG_RUNTIME_DIR"
   chmod 700 "$XDG_RUNTIME_DIR"
 fi
 
-export ZELLIJ_SOCKET_DIR="${ZELLIJ_SOCKET_DIR:-${HOME}/.cache/zellij-sock}"
-mkdir -p "$ZELLIJ_SOCKET_DIR"
-chmod 700 "$ZELLIJ_SOCKET_DIR"
+# Socket dir for Kitty remote control (smart-splits / kitty-scrollback).
+mkdir -p "${HOME}/.cache/kitty"
+chmod 700 "${HOME}/.cache/kitty"
 
-# Keep clipcopy on PATH for Zellij copy_command.
+# Keep clipcopy on PATH for scripts.
 if [ -x "$SETUP_ROOT/.config/shell/clipcopy" ]; then
   mkdir -p "${HOME}/.local/bin"
   ln -sfn "$SETUP_ROOT/.config/shell/clipcopy" "${HOME}/.local/bin/clipcopy"

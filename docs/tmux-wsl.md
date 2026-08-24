@@ -19,14 +19,13 @@ Windows 宿主机终端（Kitty / Windows Terminal）
 sudo pacman -S --needed tmux
 ```
 
-本仓库使用 [Oh My Tmux](https://github.com/gpakosz/.tmux) + [Catppuccin for Tmux](https://github.com/catppuccin/tmux)（Mocha，与 Neovim 一致）+ TPM 插件。
+本仓库使用 [Oh My Tmux](https://github.com/gpakosz/.tmux) + [Tokyo Night Tmux](https://github.com/janoamaral/tokyo-night-tmux)（night，与 Neovim / Kitty 一致）+ TPM 插件。
 
 首次克隆 setup 后拉 submodule：
 
 ```bash
 cd ~/setup
-git submodule update --init --recursive .config/tmux/oh-my-tmux .config/tmux/catppuccin/tmux
-# catppuccin 固定 v2.3.0 tag：若需切换版本，在 catppuccin/tmux 内 git checkout v2.3.0
+git submodule update --init --recursive .config/tmux/oh-my-tmux
 ```
 
 目录布局（XDG）：
@@ -34,10 +33,9 @@ git submodule update --init --recursive .config/tmux/oh-my-tmux .config/tmux/cat
 ```text
 ~/.config/tmux  →  ~/setup/.config/tmux   # 符号链接
   tmux.conf     →  oh-my-tmux/.tmux.conf            # 勿改 upstream
-  tmux.conf.local                                # 定制：Catppuccin、smart-splits、插件
+  tmux.conf.local                                # 定制：Tokyo Night、smart-splits、插件
   oh-my-tmux/                                    # submodule
-  catppuccin/tmux/                       # submodule（勿放在 plugins/，否则 TPM clean 会删）
-  plugins/                                       # TPM 自动安装 resurrect / continuum 等
+  plugins/                                       # TPM 自动安装 tokyo-night-tmux / resurrect / continuum 等
 ```
 
 链接到 home（若尚未链接）：
@@ -53,20 +51,19 @@ ln -sfn ~/setup/.config/tmux ~/.config/tmux
 ```bash
 cd ~/setup
 git submodule update --remote .config/tmux/oh-my-tmux
-git submodule update --remote .config/tmux/catppuccin/tmux
-# 只改 tmux.conf.local，不要改 oh-my-tmux/.tmux.conf 或 catppuccin 仓库内文件
+# 只改 tmux.conf.local，不要改 oh-my-tmux/.tmux.conf
 ```
 
 ## 主题与插件
 
 | 组件 | 说明 |
 | --- | --- |
-| **Catppuccin Mocha** | 官方 `catppuccin/tmux` v2，`rounded` 窗口样式；底栏 session / uptime / 路径 / host / 电池 |
+| **Tokyo Night** | `janoamaral/tokyo-night-tmux` night；底栏 session / hostname / 路径 / 电池 / 时间 |
 | **resurrect** | 手动保存/恢复布局：`<prefix>` `Ctrl-s` 保存，`Ctrl-r` 恢复 |
 | **continuum** | 每 15 分钟自动保存；`@continuum-restore` 启动时恢复 |
 
 首次启用 TPM 插件：`<prefix>` `I`（大写 I）安装。之后 `<prefix>` `r` 重载配置。
-tmux.conf.local 里 tmux_conf_uninstall_plugins_on_reload=false，避免 TPM 的 clean_plugins 误删非 @plugin 目录。Catppuccin 用 run-shell 检测脚本存在后再加载；submodule 未 init 时不会 exit 127。
+tmux.conf.local 里 `tmux_conf_uninstall_plugins_on_reload=false`，避免 TPM 的 `clean_plugins` 误删非 `@plugin` 目录。
 
 
 
@@ -132,8 +129,8 @@ tmux source-file ~/.config/tmux/tmux.conf
 
 | 按键 | 作用 |
 | --- | --- |
-| `C-h/j/k/l` | nvim 分屏 ↔ tmux 窗格移动（smart-splits） |
-| `Alt-h/j/k/l` | 缩放 nvim 分屏 / tmux 窗格 |
+| `C-h/j/k/l` | nvim 分屏 ↔ tmux 窗格移动（smart-splits；本机 Kitty 里同一套键，见 [lazyvim.md](./lazyvim.md)） |
+| `Alt-h/j/k/l` | **仅 tmux、焦点不在 nvim 时**：缩放 pane。nvim 里 `Alt-j/k` 已改回 LazyVim 移行使 |
 
 ### 复制模式（vi）
 

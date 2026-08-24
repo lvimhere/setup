@@ -1,5 +1,8 @@
 .config/kitty/kitty.conf.bak
-.config/zellij/plugins/*.wasm
+# Copied by smart-splits.nvim `./kitty/install-kittens.bash`
+.config/kitty/neighboring_window.py
+.config/kitty/relative_resize.py
+.config/kitty/split_window.py
 # Installed by `ya pkg`; restore with `ya pkg install`
 .config/yazi/plugins/
 .config/yazi/flavors/

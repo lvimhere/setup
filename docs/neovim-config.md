@@ -1,7 +1,7 @@
 # Neovim 配置文档（nvim-vimpack）
 
 > 本文档对应 `~/setup/.config/nvim-vimpack`（旧版 `vim.pack` 配置），不是当前使用的 LazyVim（`~/setup/.config/nvim`）。  
-> 当前 LazyVim 配置与 Zellij 改键说明见 [lazyvim.md](./lazyvim.md)。
+> 当前 LazyVim 配置见 [lazyvim.md](./lazyvim.md)。
 
 本文档说明该 Neovim 0.12 编码配置，包括整体结构、核心行为、插件用途、维护状态与快捷键。
 
@@ -148,7 +148,7 @@ Neovim 在 `WAYLAND_DISPLAY` 已设置但 Wayland socket 不存在时，仍可�
 
 | 插件 | 作用 | 说明 |
 | --- | --- | --- |
-| `catppuccin/nvim` | 主题 | 当前使用 `catppuccin-mocha` |
+| `sainnhe/everforest` | 主题 | 当前使用 `everforest`（hard） |
 | `nvim-treesitter/nvim-treesitter` | 语法树解析与高亮 | 采用兼容 Neovim 0.12 的新写法 |
 
 **Treesitter 命令**

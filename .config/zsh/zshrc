@@ -2,7 +2,7 @@
 SETUP_ROOT="${SETUP_ROOT:-$HOME/setup}"
 [[ -f "$SETUP_ROOT/.config/zsh/cachyos-config.zsh" ]] && source "$SETUP_ROOT/.config/zsh/cachyos-config.zsh"
 
-# setup shared env (clipcopy / zellij / starship)
+# setup shared env (clipcopy / starship)
 [[ -f "$SETUP_ROOT/.config/shell/env.sh" ]] && . "$SETUP_ROOT/.config/shell/env.sh"
 
 [[ -f "${HOME}/.config/broot/launcher/bash/br" ]] && source "${HOME}/.config/broot/launcher/bash/br"

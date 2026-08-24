@@ -34,7 +34,7 @@ ln -sfn ~/setup/.config/broot ~/.config/broot
 | --- | --- |
 | `default_flags: "-g"` | 启动即显示 Git 状态 |
 | `icon_theme: nerdfont` | 用终端 Nerd Font（本机 Kitty：Hack Nerd Font Mono）。`vscode` 要另装 broot 的 `vscode.ttf`，否则会显示成「口」 |
-| 皮肤 `catppuccin-mocha` | 暗色终端；浅色终端走 `white.hjson` |
+| 皮肤 `tokyo-night` | 暗色终端；浅色终端走 `white.hjson` |
 | `edit` 使用 `+{line}` | 从预览/内容搜索跳到 nvim 对应行 |
 | `:gtr` / 输入 `gr` | 回到当前 Git 仓库根 |
 | `:gd` / `git_diff` | 当前文件用 nvimdiff 并排看普通 diff（`git difftool`） |

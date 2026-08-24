@@ -22,11 +22,8 @@ if not set -q XDG_RUNTIME_DIR; or not test -d $XDG_RUNTIME_DIR; or not test -w $
     chmod 700 $XDG_RUNTIME_DIR
 end
 
-if not set -q ZELLIJ_SOCKET_DIR
-    set -gx ZELLIJ_SOCKET_DIR $HOME/.cache/zellij-sock
-end
-mkdir -p $ZELLIJ_SOCKET_DIR
-chmod 700 $ZELLIJ_SOCKET_DIR
+mkdir -p $HOME/.cache/kitty
+chmod 700 $HOME/.cache/kitty
 
 if test -x $SETUP_ROOT/.config/shell/clipcopy
     mkdir -p $HOME/.local/bin

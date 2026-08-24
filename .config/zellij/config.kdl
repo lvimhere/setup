@@ -1,5 +1,5 @@
-// Portable Zellij config for native Linux + WSL.
-// Docs: setup/docs/zellij.md
+// OBSOLETE (2026-08-24): Zellij is no longer used. Do not symlink this tree.
+// Historical docs: setup/docs/zellij.md
 
 on_force_close "detach"
 
@@ -9,8 +9,8 @@ default_layout "compact"
 // No powerline / nerd-font arrow separators in built-in UI
 simplified_ui true
 
-// Catppuccin Mocha + muted pane borders (see themes/catppuccin-mocha-muted.kdl)
-theme "catppuccin-mocha-muted"
+// Tokyo Night + muted pane borders (see themes/tokyo-night-muted.kdl)
+theme "tokyo-night-muted"
 
 // Start Locked so Ctrl-p/t/o/n/s/h don't steal from Neovim (Telescope, blink, jumplist…).
 // Unlock with Ctrl-g when you need full Pane/Tab/Session modes.

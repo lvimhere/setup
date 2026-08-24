@@ -9,9 +9,9 @@
 | [starship.md](./starship.md) | 提示符（Tokyo Night Powerline） |
 | [yazi.md](./yazi.md) | 终端文件管理器 |
 | [broot.md](./broot.md) | 树形浏览 `br` |
-| [zellij.md](./zellij.md) | 本机 multiplexer |
+| [zellij.md](./zellij.md) | **作废**：已停用 |
 | [tmux-wsl.md](./tmux-wsl.md) | SSH / WSL 用的 tmux |
 | [lazyvim.md](./lazyvim.md) | 当前 Neovim（`~/.config/nvim`） |
 | [neovim-config.md](./neovim-config.md) | 旧版 nvim-vimpack |
-| [kitty-config.md](./kitty-config.md) | Kitty |
+| [kitty-config.md](./kitty-config.md) | Kitty（含与 nvim 的 `<C-hjkl>` / 遥控） |
 | [font-setup.md](./font-setup.md) | 本机字体 |

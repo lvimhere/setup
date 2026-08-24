@@ -7,7 +7,7 @@
 | 工具 | 文档 |
 | --- | --- |
 | Neovim | [neovim-config.md](./neovim-config.md)、[lazyvim.md](./lazyvim.md) |
-| Zellij | [zellij.md](./zellij.md) |
+| Zellij（**作废**） | [zellij.md](./zellij.md)；已停用，勿再安装 |
 | tmux | [tmux-wsl.md](./tmux-wsl.md) |
 | Kitty | [kitty-config.md](./kitty-config.md) |
 | Yazi | [yazi.md](./yazi.md) |

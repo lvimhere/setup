@@ -83,7 +83,7 @@ tmux_conf_24b_colour=auto
 #   - tmux_conf_theme_mouse
 #   - tmux_conf_theme_root
 #   - tmux_conf_theme_synchronized
-# Use Catppuccin for Tmux (see user customizations + catppuccin/tmux) instead of OMT built-in theme.
+# Use Tokyo Night for Tmux (see user customizations + TPM plugin) instead of OMT built-in theme.
 tmux_conf_theme=disabled
 
 # OMT palette below is unused while tmux_conf_theme=disabled; kept for reference if you switch back.
@@ -225,7 +225,7 @@ tmux_conf_theme_window_status_activity_bg="default"
 tmux_conf_theme_window_status_activity_attr="underscore"
 
 # window bell status style
-tmux_conf_theme_window_status_bell_fg="#fab387"
+tmux_conf_theme_window_status_bell_fg="#ff9e64"
 tmux_conf_theme_window_status_bell_bg="default"
 tmux_conf_theme_window_status_bell_attr="none"
 
@@ -396,23 +396,20 @@ set -g status-justify left
 set -g history-limit 100000
 set -g mouse on
 
-# Catppuccin for Tmux — https://github.com/catppuccin/tmux (matches Neovim catppuccin-mocha)
-# Manual install (recommended upstream): .config/tmux/catppuccin/tmux
-# Not under plugins/ — Oh My Tmux TPM clean_plugins removes dirs there that are not @plugin entries.
-set -g @catppuccin_flavor 'mocha'
-set -g @catppuccin_window_status_style 'rounded'
-# Default window text is #T (pane title). Bash/Kitty often set that to user@host:path,
-# which duplicates Catppuccin directory/host modules and causes the "path twice" glitch.
-set -g @catppuccin_window_text " #W"
-set -g @catppuccin_window_current_text " #W"
-run-shell "test -x ~/.config/tmux/catppuccin/tmux/catppuccin.tmux && ~/.config/tmux/catppuccin/tmux/catppuccin.tmux"
-
-# Catppuccin status modules (after catppuccin.tmux); battery needs tmux-battery @plugin below.
-set -g status-left "#{E:@catppuccin_status_session}"
-set -g status-right "#{E:@catppuccin_status_uptime}"
-set -ag status-right "#{E:@catppuccin_status_directory}"
-set -ag status-right "#{E:@catppuccin_status_host}"
-set -agF status-right "#{E:@catppuccin_status_battery}"
+# Tokyo Night for Tmux — https://github.com/janoamaral/tokyo-night-tmux
+# Matches Neovim / Kitty tokyonight night. Installed via TPM (@plugin below).
+set -g @tokyo-night-tmux_theme night
+set -g @tokyo-night-tmux_window_id_style digital
+set -g @tokyo-night-tmux_show_path 1
+set -g @tokyo-night-tmux_path_format relative
+set -g @tokyo-night-tmux_show_hostname 1
+set -g @tokyo-night-tmux_show_battery_widget 1
+set -g @tokyo-night-tmux_battery_name "BAT0"
+set -g @tokyo-night-tmux_show_datetime 1
+set -g @tokyo-night-tmux_date_format MDY
+set -g @tokyo-night-tmux_time_format 24H
+# Keep the bar close to the old session / path / host / battery layout.
+set -g @tokyo-night-tmux_show_right_widgets "path,battery,datetime"
 
 # smart-splits: @pane-is-vim is set by smart-splits.nvim while Neovim is focused.
 # Do NOT bind C-\ here — ToggleTerm uses it inside Neovim.
@@ -499,6 +496,7 @@ tmux_conf_uninstall_plugins_on_reload=false
 # visit https://github.com/tmux-plugins for available plugins
 #set -g @plugin 'tmux-plugins/tmux-copycat'
 #set -g @plugin 'tmux-plugins/tmux-cpu'
+set -g @plugin 'janoamaral/tokyo-night-tmux'
 set -g @plugin 'tmux-plugins/tmux-battery'
 set -g @plugin 'tmux-plugins/tmux-resurrect'
 set -g @plugin 'tmux-plugins/tmux-continuum'

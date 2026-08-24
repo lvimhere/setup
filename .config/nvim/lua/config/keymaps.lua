@@ -1,22 +1,15 @@
 -- Keymaps are automatically loaded on the VeryLazy event
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 -- Add any additional keymaps here
+--
+-- Move line: keep LazyVim defaults Alt-j / Alt-k (n/i/v).
 
--- Move lines on Alt-Shift-j/k so Alt-j/k stay free for Zellij pane focus (Locked).
--- Same policy: Snacks picker hidden/follow and LSP words-next use Alt-Shift
--- (see lua/plugins/snacks.lua and ~/setup/docs/lazyvim.md).
-for _, lhs in ipairs({ "<A-j>", "<A-k>" }) do
-  for _, mode in ipairs({ "n", "i", "v" }) do
-    pcall(vim.keymap.del, mode, lhs)
-  end
-end
-
-vim.keymap.set("n", "<A-J>", "<cmd>execute 'move .+' . v:count1<cr>==", { desc = "Move Down" })
-vim.keymap.set("n", "<A-K>", "<cmd>execute 'move .-' . (v:count1 + 1)<cr>==", { desc = "Move Up" })
-vim.keymap.set("i", "<A-J>", "<esc><cmd>m .+1<cr>==gi", { desc = "Move Down" })
-vim.keymap.set("i", "<A-K>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move Up" })
-vim.keymap.set("v", "<A-J>", ":<C-u>execute \"'<,'>move '>+\" . v:count1<cr>gv=gv", { desc = "Move Down" })
-vim.keymap.set("v", "<A-K>", ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv", { desc = "Move Up" })
+-- Override LazyVim <C-w>hjkl so we can leave Neovim into a Kitty / tmux pane.
+local smart_splits = require("smart-splits")
+vim.keymap.set("n", "<C-h>", smart_splits.move_cursor_left, { desc = "Go to Left Window" })
+vim.keymap.set("n", "<C-j>", smart_splits.move_cursor_down, { desc = "Go to Lower Window" })
+vim.keymap.set("n", "<C-k>", smart_splits.move_cursor_up, { desc = "Go to Upper Window" })
+vim.keymap.set("n", "<C-l>", smart_splits.move_cursor_right, { desc = "Go to Right Window" })
 
 -- Drop builtin gs (:sleep) so it can be a prefix group (see mini.splitjoin).
 vim.keymap.set({ "n", "x" }, "gs", "<Nop>", { desc = "+split/join" })

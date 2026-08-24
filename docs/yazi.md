@@ -30,7 +30,7 @@ ya pkg install
 | `full-border` | 四周边框（`init.lua` 里设为圆角） |
 | `toggle-pane` | `T`：放大 / 还原预览 |
 
-`init.lua` 还把 git 插件的 `order` 设成 `1500`（状态列位置）。主题：`catppuccin-mocha`（与 Zellij 同系）。
+`init.lua` 还把 git 插件的 `order` 设成 `1500`（状态列位置）。主题：`tokyo-night`（`BennyOe/tokyo-night`，与 Kitty 同系）。
 
 额外键位：
 

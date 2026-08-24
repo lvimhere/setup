@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Portable stdin → system clipboard for Zellij / scripts.
+# Portable stdin → system clipboard for scripts.
 # Order: win32yank (WSL) → wl-copy (Wayland) → xclip/xsel → clip.exe
 
 set -euo pipefail

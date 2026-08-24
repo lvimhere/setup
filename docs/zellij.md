@@ -1,6 +1,10 @@
-# Zellij（本机主用，原生 Linux + WSL）
+# Zellij（作废）
 
-## 分工
+> **作废（2026-08-24）**：已停用 Zellij。本机已卸载软件包，并删除 `~/.config/zellij`、缓存与 socket。`setup/.config/zellij` 仅作历史存档，不要再链到 home。下文不要按此安装或启用。
+>
+> 本机分屏用 Kitty / Neovim；远端会话仍用 [tmux](./tmux-wsl.md)。
+
+## 分工（历史）
 
 | 场景 | 工具 |
 | --- | --- |
@@ -35,7 +39,7 @@ ln -sfn ~/setup/.config/zellij ~/.config/zellij
 - `default_layout "compact"`：单行底栏
 - `simplified_ui true`：不用 powerline 尖角字体
 - **`stacked_resize false`**：`Alt-=/+/-` 只改大小，不会把相邻 pane 叠起来，也不会拆开已有堆叠
-- **主题**：`catppuccin-mocha-muted`（未选中 surface0；焦点 green；鼠标悬停 / 进模式 peach，与上游 `catppuccin-mocha` 一致）
+- **主题**：`tokyo-night-muted`（未选中 `#1a1b26` / `#292e42`；焦点 green；鼠标悬停 / 进模式 orange，与上游 `tokyo-night-dark` 一致）
 - **默认 Locked**（`default_mode "locked"`）：不抢 Neovim 的 `Ctrl-p/t/o/…`；Locked 下仍可用 `Alt-*` 切窗格 / 开浮窗
 - 底栏插件：**zjstatus**（模式 / 会话 / tabs / git 分支 / 时间）
 

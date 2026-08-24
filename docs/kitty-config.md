@@ -49,18 +49,18 @@
 
 ### 主题
 
-当前使用主题：**Catppuccin Mocha**
+当前使用主题：**Tokyo Night**（`tokyonight.nvim` extras night）
 
 主要颜色：
 
-- 前景色：`#CDD6F4`
-- 背景色：`#1E1E2E`
-- 选中背景：`#F5E0DC`
-- 光标：`#F5E0DC`
-- 活动边框：`#B4BEFE`
-- 非活动边框：`#6C7086`
-- 活动 Tab：`#CBA6F7`
-- 非活动 Tab 背景：`#181825`
+- 前景色：`#c0caf5`
+- 背景色：`#1a1b26`
+- 选中背景：`#283457`
+- 光标：`#c0caf5`
+- 活动边框：`#7aa2f7`
+- 非活动边框：`#292e42`
+- 活动 Tab：`#7aa2f7`
+- 非活动 Tab 背景：`#292e42`
 
 ## 常用快捷键
 
@@ -77,7 +77,7 @@
 | 移动当前窗口顺序 | `Ctrl+Shift+F` |
 | 左右分屏新开终端 | `Ctrl+Shift+\` |
 | 上下分屏新开终端 | `Ctrl+Shift+'` |
-| 左/下/上/右切换窗口 | `Ctrl+H` / `Ctrl+J` / `Ctrl+K` / `Ctrl+L` |
+| 左/下/上/右切换窗口（与 nvim 共用） | `Ctrl+H` / `Ctrl+J` / `Ctrl+K` / `Ctrl+L` |
 
 说明：
 
@@ -127,8 +127,10 @@
 | 向下翻页 | `Ctrl+Shift+PageDown` |
 | 滚动到顶部 | `Ctrl+Shift+Home` |
 | 滚动到底部 | `Ctrl+Shift+End` |
-| 打开 scrollback | `Ctrl+Shift+H` |
-| 搜索 scrollback | `Ctrl+Shift+/` |
+| 用 nvim 打开 scrollback | `Ctrl+Shift+H` |
+| 用 nvim 打开上一条命令输出 | `Ctrl+Shift+G` |
+| 点选命令输出后用 nvim 打开 | `Ctrl+Shift` + 鼠标右键 |
+| 用 fzf 搜 scrollback | `Ctrl+Shift+F2` |
 
 ## 主题与配置操作
 
@@ -137,6 +139,31 @@
 | 打开主题选择器 | `Ctrl+Shift+I` |
 | 重载 kitty 配置 | `Ctrl+Shift+F5` |
 | 搜索历史输出（需要 `fzf`） | `Ctrl+Shift+F2` |
+
+## 与 Neovim（smart-splits / 遥控）
+
+完整按键路径、为何要开遥控、如何验收，见 [lazyvim.md 的 smart-splits 一节](./lazyvim.md#smart-splitsctrl-hjkl-跨窗格)。这里只写 Kitty 侧已经配好的部分。
+
+**遥控不是另写业务脚本。** 只装 `smart-splits.nvim` 时，`<C-h>` 只能在 nvim 分屏里打转。要跳出编辑器，Kitty 必须听 socket，并且用 `IS_NVIM` 决定「自己切窗格」还是「把键交给 nvim」。插件启动时会设这个用户变量；`install-kittens.bash` 只是把插件自带的 `.py` 拷进 `~/.config/kitty/`（不进 git）。
+
+| 配置 | 本仓库取值 |
+| --- | --- |
+| `allow_remote_control` | `socket-only`（只认 Unix socket，不认 TTY 里的 `kitty @`） |
+| `listen_on` | `unix:${HOME}/.cache/kitty/kitty-{kitty_pid}` |
+| 切窗格 | `ctrl+h/j/k/l` → `neighboring_window` |
+| 焦点在 nvim | `map --when-focus-on var:IS_NVIM ctrl+h`（以及 j/k/l）无动作，键进 nvim |
+| 缩放 | `Ctrl+Shift+Alt+hjkl`，不占用 `Alt-j/k` |
+
+改 `allow_remote_control` / `listen_on` 后要**完全退出并重开 Kitty**（只 `Ctrl+Shift+F5` 不够，旧进程没有 socket）。
+
+| 功能 | 说明 |
+| --- | --- |
+| `<C-hjkl>` | 普通终端：切窗格。nvim 里：先走分屏，贴边再经 socket 切 Kitty 窗格 |
+| `Ctrl+Shift+H` | [kitty-scrollback.nvim](https://github.com/mikesmithgh/kitty-scrollback.nvim) 翻历史；精简 `-u`，`q` 退出 |
+| `Ctrl+Shift+G` | 上一条命令的输出 |
+| `Ctrl+Shift` + 右键 | 点选的那条命令输出 |
+
+scrollback 的 Python kitten 在 `~/.local/share/nvim/lazy/kitty-scrollback.nvim/`，`-u` 用 `~/setup/.config/nvim/kitty-scrollback-kitten.lua`。
 
 ## 备注
 

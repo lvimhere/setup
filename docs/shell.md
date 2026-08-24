@@ -6,7 +6,7 @@
 setup/.config/shell/
   env.sh       # bash / zsh
   env.fish     # fish
-  clipcopy     # 跨平台剪贴板（Zellij / 脚本）
+  clipcopy     # 跨平台剪贴板
 ```
 
 本机仓库在 `~/setup`。换路径时改 `SETUP_ROOT`。
@@ -90,8 +90,8 @@ test -f $SETUP_ROOT/.config/shell/env.fish; and source $SETUP_ROOT/.config/shell
 | --- | --- |
 | `PATH` | 加入 `~/.local/bin` |
 | `EDITOR` / `VISUAL` | 未设置时默认为 `nvim` |
-| `XDG_RUNTIME_DIR` | 不可用时回退到 `~/.cache/xdg-runtime`（修 WSL 上 Zellij PermissionDenied） |
-| `ZELLIJ_SOCKET_DIR` | 默认 `~/.cache/zellij-sock` |
+| `XDG_RUNTIME_DIR` | 不可用时回退到 `~/.cache/xdg-runtime`（WSL 上 `/run/user/$UID` 常不存在） |
+| `~/.cache/kitty` | 仅建目录（700），给 Kitty `listen_on` socket 用 |
 | `clipcopy` | 符号链接到 `~/.local/bin` |
 | `win32yank.exe` | 仅当 `/mnt/c/Program Files/Neovim/bin/...` 存在时创建（WSL） |
 | `curl` alias | 仅 WSL 交互壳，强制 Linux curl |

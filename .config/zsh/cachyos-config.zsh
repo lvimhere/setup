@@ -87,8 +87,16 @@ fi
 
 # --- completions / widgets (order: fzf-tab, then wrapping plugins) ---
 
+# extra/AUR is often `fzf-tab`; archlinuxcn ships `fzf-tab-git` under a different path.
+_fzf_tab=""
 if [[ -r /usr/share/zsh/plugins/fzf-tab/fzf-tab.plugin.zsh ]]; then
-  source /usr/share/zsh/plugins/fzf-tab/fzf-tab.plugin.zsh
+  _fzf_tab=/usr/share/zsh/plugins/fzf-tab/fzf-tab.plugin.zsh
+elif [[ -r /usr/share/zsh/plugins/fzf-tab-git/fzf-tab.plugin.zsh ]]; then
+  _fzf_tab=/usr/share/zsh/plugins/fzf-tab-git/fzf-tab.plugin.zsh
+fi
+if [[ -n $_fzf_tab ]]; then
+  source "$_fzf_tab"
+  unset _fzf_tab
   zstyle ":completion:*:git-checkout:*" sort false
   zstyle ":completion:*:descriptions" format "[%d]"
   zstyle ":completion:*" menu no

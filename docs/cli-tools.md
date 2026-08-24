@@ -43,7 +43,7 @@ Bruno 图形界面不在 extra，见 [http-tools.md](./http-tools.md)。CLI **�
 AUR / 非官方仓库（按需，本机曾装过）：
 
 ```bash
-paru -S --needed fzf-tab bruno-bin wget2 claude-code openai-codex-bin kimi-code
+paru -S --needed fzf-tab-git bruno-bin wget2 claude-code openai-codex-bin kimi-code
 ```
 
 `eza` / `fd` / `fzf` / `bat` / `tealdeer` / `jq` 当前可能被 CachyOS fish/zsh 配置带成依赖。重装后请按上面**显式安装**，避免卸掉发行版 shell 配置时一起消失。
@@ -62,7 +62,7 @@ paru -S --needed fzf-tab bruno-bin wget2 claude-code openai-codex-bin kimi-code
 | `fd` | `fd` | 比 `find` 好用的文件查找 | 依赖带入，重装请显式 |
 | `fzf` | `fzf` | 模糊选择器（管道、Ctrl-R 等） | 依赖带入，重装请显式 |
 | `ripgrep` | `rg` | 极速文本搜索 | 显式已装 |
-| `fzf-tab` | （zsh Tab） | Tab 补全改用 fzf；`cd`/`z` 用 eza 预览 | AUR，显式已装，见 [shell.md](./shell.md) |
+| `fzf-tab-git` | （zsh Tab） | Tab 补全改用 fzf；`cd`/`z` 用 eza 预览 | archlinuxcn，显式已装，见 [shell.md](./shell.md) |
 
 ### 阅读与手册
 

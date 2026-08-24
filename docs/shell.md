@@ -52,7 +52,7 @@ ln -sfn ~/setup/.config/zsh/zshrc ~/.zshrc
 | `cleanup` | 函数，运行时才查孤儿包 |
 | eza | `ls` / `ll` / `la` / `lt` / `l.`，与 CachyOS fish 对齐 |
 | bat | 不替换 `cat`；`man` 走 `bat` |
-| fzf-tab | AUR `fzf-tab`，Tab 补全用 fzf；`cd`/`z` 用 eza 预览 |
+| fzf-tab | archlinuxcn `fzf-tab-git`（或 AUR `fzf-tab`），Tab 补全用 fzf；`cd`/`z` 用 eza 预览 |
 | 历史子串 | 输入一段再按上/下、`Ctrl-P`/`Ctrl-N`，或 Normal 的 `j`/`k` |
 | sudo | **Alt-S** 在行首加/去掉 `sudo`（`KEYTIMEOUT=1` 时 Esc Esc 不好用） |
 | extract | OMZ `extract`：`x` / `extract` 解压常见压缩包 |

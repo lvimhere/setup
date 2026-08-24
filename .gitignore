@@ -10,6 +10,8 @@
 .config/broot/launcher/
 # TPM installs plugins locally; reinstall with <prefix> I
 .config/tmux/plugins/
+# Zellij plugin binaries (zjstatus.wasm); docs: do not commit
+.config/zellij/plugins/
 # Runtime / generated junk
 tmux-client-*.log
 *.log

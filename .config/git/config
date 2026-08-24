@@ -16,6 +16,3 @@
 
 [alias]
 	dft = "!git -c diff.external=difft diff"
-[user]
-	email = yy@yongyuan.com
-	name = jsyy

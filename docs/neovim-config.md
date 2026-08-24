@@ -338,6 +338,8 @@ Neovim 在 `WAYLAND_DISPLAY` 已设置但 Wayland socket 不存在时，仍可�
 
 ### HTTP / API 客户端
 
+> 当前本机 HTTP 栈（`xh` / Bruno / `mitmproxy` + LazyVim Kulala）见 [http-tools.md](./http-tools.md)。下面是旧 vimpack 里的 Kulala 配置。
+
 | 插件 | 作用 | 说明 |
 | --- | --- | --- |
 | `mistweaverco/kulala.nvim` | HTTP / GraphQL / gRPC / WebSocket 客户端 | 兼容 JetBrains `.http` 规范，支持环境变量、脚本与断言 |

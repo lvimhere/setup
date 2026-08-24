@@ -3,7 +3,7 @@
 > 当前使用的配置：`~/setup/.config/nvim` → `~/.config/nvim`。  
 > 旧版 `vim.pack` 配置见 [neovim-config.md](./neovim-config.md)（`~/setup/.config/nvim-vimpack`）。
 
-本仓库在 [LazyVim](https://www.lazyvim.org/) 上只做少量覆盖：配色、缩进显示、SQL（dadbod）、splitjoin、与 Kitty / tmux 联动的 `<C-hjkl>`，以及若干 `Alt-Shift` 改键。
+本仓库在 [LazyVim](https://www.lazyvim.org/) 上只做少量覆盖：配色、缩进显示、SQL（dadbod）、splitjoin、与 Kitty / tmux 联动的 `<C-hjkl>`，以及若干 `Alt-Shift` 改键。nvim 里的 HTTP 客户端是 extra **`util.rest`**（Kulala / `.http`）。项目集合用 Bruno 图形界面，终端打一条用 `xh`，抓包用 `mitmproxy`；Bruno CLI 暂时不装。见 [http-tools.md](./http-tools.md)。
 
 ## 配置结构
 
@@ -141,5 +141,6 @@ tmux 里 `C-hjkl` 仍由 `tmux.conf.local` 的 `@pane-is-vim` 转发，见 [tmux
 | `lua/plugins/colorscheme.lua` | TokyoNight `night`：函数名加粗 |
 | `lua/plugins/splitjoin.lua` | mini.splitjoin：`gS` / `gss` / `gsj` |
 | `lua/plugins/dadbod.lua` | 练习库 MySQL 连接；避免占用 `<leader>S` |
+| `lazyvim.json` → `util.rest` | Kulala：`.http` 文件里 `<leader>Rs` 发送请求 |
 
-Leader 仍是 LazyVim 默认 `<Space>`。`<leader>ff` 找文件，`<leader>/` 或 `<leader>sg` grep。
+Leader 仍是 LazyVim 默认 `<Space>`。`<leader>ff` 找文件，`<leader>/` 或 `<leader>sg` grep。`.http` 快捷键见 [http-tools.md](./http-tools.md)。

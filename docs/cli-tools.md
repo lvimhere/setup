@@ -13,6 +13,8 @@
 | Yazi | [yazi.md](./yazi.md) |
 | broot | [broot.md](./broot.md) |
 | Starship | [starship.md](./starship.md) |
+| HTTP（xh / Bruno / mitmproxy / Kulala） | [http-tools.md](./http-tools.md) |
+| 下载（wget2 / aria2 / rclone / lftp / rsync） | [download-tools.md](./download-tools.md) |
 | Shell 环境 | [shell.md](./shell.md) |
 | 字体 | [font-setup.md](./font-setup.md) |
 
@@ -27,6 +29,8 @@ sudo pacman -S --needed \
   starship \
   yazi broot zoxide eza fd fzf ripgrep \
   bat tealdeer jq \
+  xh mitmproxy \
+  aria2 rclone lftp rsync \
   git-delta difftastic \
   btop glances duf \
   7zip unzip unrar \
@@ -34,10 +38,12 @@ sudo pacman -S --needed \
   wl-clipboard
 ```
 
+Bruno 图形界面不在 extra，见 [http-tools.md](./http-tools.md)。CLI **暂时不装**。
+
 AUR / 非官方仓库（按需，本机曾装过）：
 
 ```bash
-paru -S --needed fzf-tab claude-code openai-codex-bin kimi-code
+paru -S --needed fzf-tab bruno-bin wget2 claude-code openai-codex-bin kimi-code
 ```
 
 `eza` / `fd` / `fzf` / `bat` / `tealdeer` / `jq` 当前可能被 CachyOS fish/zsh 配置带成依赖。重装后请按上面**显式安装**，避免卸掉发行版 shell 配置时一起消失。
@@ -65,6 +71,30 @@ paru -S --needed fzf-tab claude-code openai-codex-bin kimi-code
 | `bat` | `bat` | 带语法高亮的阅读。本机**不** `alias cat=bat`；zsh 里 `man` 走 `bat` | 依赖带入，重装请显式 |
 | `tealdeer` | `tldr` | 简短命令示例（比 man 快查） | 依赖带入，重装请显式 |
 | `jq` | `jq` | 命令行处理 JSON | 依赖带入，重装请显式 |
+
+### HTTP
+
+用法见 [http-tools.md](./http-tools.md)。
+
+| 包名 / 命令 | 作用 | 本机 |
+| --- | --- | --- |
+| `xh` | 终端打一条 HTTP | extra，重装请显式 |
+| `bruno-bin` | Bruno 图形界面 | AUR |
+| `bru`（`npm:@usebruno/cli`） | 同一份 `.bru` 集合进 CI | **暂时不装**；AUR 无官方包，见 [http-tools.md](./http-tools.md) |
+| `mitmproxy` | 抓包 / 改包 | extra，重装请显式 |
+| Kulala | Neovim 发 `.http` | LazyVim extra `util.rest` |
+
+### 下载
+
+用法见 [download-tools.md](./download-tools.md)。未选定的对照工具只写在那篇里，不进本清单。
+
+| 包名 / 命令 | 作用 | 本机 |
+| --- | --- | --- |
+| `wget2` | HTTP 下载 / 镜像（GNU wget 继任） | AUR |
+| `aria2`（`aria2c`） | 多连接、BT / 磁力 / Metalink | extra，重装请显式 |
+| `rclone` | 网盘 / S3 / WebDAV | extra，重装请显式 |
+| `lftp` | FTP / SFTP 镜像 | extra，重装请显式 |
+| `rsync` | 目录同步（常走 SSH） | extra，系统常已带；重装请显式 |
 
 ### Git 阅读（diff）
 
@@ -162,3 +192,5 @@ difft old.rs new.rs      # 不经过 Git，直接比两个文件
 - Git pager / `git dft`：`setup/.config/git/config`（不含 `diff.tool`）
 - Yazi：`setup/.config/yazi/`，说明见 [yazi.md](./yazi.md)
 - broot：`setup/.config/broot/`，说明见 [broot.md](./broot.md)。`:gd` / `:gm` 在动词里写死 `--tool=nvimdiff`，不改全局 `diff.tool` / `merge.tool`
+- HTTP：`xh` / Bruno / `mitmproxy` / Kulala，说明见 [http-tools.md](./http-tools.md)
+- 下载：`wget2` / `aria2` / `rclone` / `lftp` / `rsync`，说明见 [download-tools.md](./download-tools.md)

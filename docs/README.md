@@ -5,6 +5,8 @@
 | 文档 | 内容 |
 | --- | --- |
 | [cli-tools.md](./cli-tools.md) | 日常 CLI 重装清单（包、delta / difftastic） |
+| [http-tools.md](./http-tools.md) | HTTP：`xh`、Bruno、`mitmproxy`，nvim 用 Kulala |
+| [download-tools.md](./download-tools.md) | 下载：`wget2` / `aria2` / `rclone` / `lftp` / `rsync` |
 | [shell.md](./shell.md) | bash / zsh / fish 接入，`env.sh` / `env.fish` |
 | [starship.md](./starship.md) | 提示符（Tokyo Night Powerline） |
 | [yazi.md](./yazi.md) | 终端文件管理器 |
